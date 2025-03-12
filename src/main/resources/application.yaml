@@ -1,0 +1,32 @@
+# log config
+debug: false
+logging:
+  level:
+    flab.transtalk: debug
+    org.springframework.web.servlet: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+spring:
+  # application name config
+  application:
+    name: transtalk
+
+  # db config
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # jpa config
+  jpa:
+    defer-datasource-initialization: true
+    # for dev
+    hibernate.ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+      hibernate.default_batch_fetch_size: 1000
+
+#  # use data.sql file for dummy data
+#  sql.init.mode: always

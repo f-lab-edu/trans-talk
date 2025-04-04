@@ -1,4 +1,4 @@
-package flab.transtalk.user.user.Service;
+package flab.transtalk.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import flab.transtalk.user.controller.UserController;

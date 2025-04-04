@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ValidationExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiErrorResponse> handelMethodArgumentNotValidException(MethodArgumentNotValidException e){
+    public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
         List<String> errors = e.getBindingResult().getFieldErrors().stream()
                 .map(err->err.getField() + ": " + err.getDefaultMessage())
                 .collect(Collectors.toList());

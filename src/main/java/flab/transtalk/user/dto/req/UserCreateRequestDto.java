@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Value
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserCreateRequestDto implements Serializable {
+public class UserCreateRequestDto {
     @NotBlank(message = "이름은 null 혹은 공백이 될 수 없습니다.")
     String name;
 

@@ -1,6 +1,8 @@
 package flab.transtalk.user.dto.res;
 
 import flab.transtalk.user.domain.User;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
@@ -12,6 +14,7 @@ import java.time.LocalDate;
  */
 @Value
 @Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserResponseDto implements Serializable {
     Long id;
     String name;

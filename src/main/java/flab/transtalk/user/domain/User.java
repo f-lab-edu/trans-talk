@@ -6,15 +6,16 @@ import lombok.*;
 
 @Entity
 @Getter
-@Setter
-@ToString
-@EqualsAndHashCode
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(
+            name = "user_seq_gen",
+            sequenceName = "user_seq"
+    )
     @Column(name = "id", nullable = false)
     private Long id;
 

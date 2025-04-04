@@ -3,6 +3,8 @@ package flab.transtalk.user.dto.req;
 import flab.transtalk.user.domain.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
@@ -14,6 +16,7 @@ import java.time.LocalDate;
  */
 @Value
 @Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserCreateRequestDto implements Serializable {
     @NotBlank(message = "이름은 null 혹은 공백이 될 수 없습니다.")
     String name;

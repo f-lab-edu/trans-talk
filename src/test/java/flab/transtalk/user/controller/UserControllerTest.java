@@ -3,6 +3,7 @@ package flab.transtalk.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import flab.transtalk.user.controller.UserController;
 import flab.transtalk.user.dto.req.UserCreateRequestDto;
+import flab.transtalk.user.service.user.UserService;
 import flab.transtalk.user.service.user.UserSignUpService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,11 +32,14 @@ public class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
+    private UserService userService;
+
+    @MockitoBean
     private UserSignUpService userSignUpService;
 
     @Test
     @DisplayName("가입 시에 사용자 이름이 공백일 경우 예외를 발생시킨다.")
-    void validationTest() throws Exception{
+    void testCreateUser_1() throws Exception{
         // given
         final String name = "";
         final LocalDate birthDate = LocalDate.now();

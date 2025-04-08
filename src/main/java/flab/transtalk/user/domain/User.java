@@ -1,10 +1,15 @@
 package flab.transtalk.user.domain;
 
+import flab.transtalk.translation.domain.ChatRoomUser;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.*;
 
 @Entity
+@Table(name = "users")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,4 +29,18 @@ public class User {
 
     @Column(name = "birth_date", columnDefinition = "DATE")
     private LocalDate birthDate;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Profile profile;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<ChatRoomUser> chatRoomUsers = new ArrayList<>();
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+        if (profile != null && profile.getUser() != this){
+            profile.setUser(this);
+        }
+    }
 }

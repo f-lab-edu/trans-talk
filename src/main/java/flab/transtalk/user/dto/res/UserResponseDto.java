@@ -19,12 +19,20 @@ public class UserResponseDto implements Serializable {
     Long id;
     String name;
     LocalDate birthDate;
+    ProfileResponseDto profile;
 
     public static UserResponseDto from(User dto) {
         return UserResponseDto.builder()
                 .id(dto.getId())
                 .name(dto.getName())
                 .birthDate(dto.getBirthDate())
+                .profile(
+                        ProfileResponseDto.builder()
+                                .id(dto.getProfile().getId())
+                                .selfIntroduction(dto.getProfile().getSelfIntroduction())
+                                .language(dto.getProfile().getLanguage())
+                                .build()
+                )
                 .build();
     }
 }

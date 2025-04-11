@@ -3,6 +3,7 @@ package flab.transtalk.user.service.user;
 
 import flab.transtalk.common.enums.LanguageSelection;
 import flab.transtalk.common.exception.NotFoundException;
+import flab.transtalk.common.exception.message.ExceptionMessages;
 import flab.transtalk.user.domain.Profile;
 import flab.transtalk.user.domain.User;
 import flab.transtalk.user.dto.res.UserResponseDto;
@@ -65,6 +66,6 @@ public class UserMatchingServiceTest {
         // when & then
         assertThatThrownBy(()->userMatchingService.getUserExcept(currentUserId))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining("발견된 사용자가 없습니다.");
+                .hasMessageContaining(ExceptionMessages.NO_USER_FOUND);
     }
 }

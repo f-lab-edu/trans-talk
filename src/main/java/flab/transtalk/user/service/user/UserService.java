@@ -1,6 +1,7 @@
 package flab.transtalk.user.service.user;
 
 import flab.transtalk.common.exception.NotFoundException;
+import flab.transtalk.common.exception.message.ExceptionMessages;
 import flab.transtalk.user.domain.User;
 import flab.transtalk.user.dto.req.UserCreateRequestDto;
 import flab.transtalk.user.dto.res.UserResponseDto;
@@ -29,7 +30,7 @@ public class UserService {
     public UserResponseDto getUser(Long userId) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()){
-            throw new NotFoundException("존재하지 않는 사용자입니다.");
+            throw new NotFoundException(ExceptionMessages.USER_NOT_FOUND);
         }
         return UserResponseDto.from(user.get());
     }

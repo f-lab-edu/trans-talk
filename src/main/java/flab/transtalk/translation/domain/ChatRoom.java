@@ -21,7 +21,7 @@ public class ChatRoom {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "title", length = 50)
+    @Column(name = "title", length = 50, nullable = false)
     private String title;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

@@ -37,7 +37,7 @@ public class UserMatchingServiceTest {
         User user = User.builder()
                 .id(2L)
                 .name("사용자2")
-                .birthDate(LocalDate.of(1999,01,01))
+                .birthDate(LocalDate.of(1999,1,1))
                 .build();
         Profile profile = Profile.builder()
                 .id(2L)

@@ -38,14 +38,13 @@ public class UserMatchingServiceTest {
         User user = User.builder()
                 .id(2L)
                 .name("사용자2")
-                .birthDate(LocalDate.of(1999,1,1))
+                .birthDate(LocalDate.of(1999, 1, 1))
+                .profile(Profile.builder()
+                        .id(2L)
+                        .language(LanguageSelection.KOR)
+                        .selfIntroduction("")
+                        .build())
                 .build();
-        Profile profile = Profile.builder()
-                .id(2L)
-                .language(LanguageSelection.KOR)
-                .selfIntroduction("")
-                .build();
-        user.setProfile(profile);
         BDDMockito.given(userRepository.findRandomUserExcept(currentUserId)).willReturn(user);
 
         // when

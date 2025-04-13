@@ -30,6 +30,9 @@ public class Profile {
     private User user;
 
     public void setUser(User user) {
+        if (this.user != null && this.user != user){
+            this.user.setProfile(null);
+        }
         this.user = user;
         if (user != null && user.getProfile() != this){
             user.setProfile(this);

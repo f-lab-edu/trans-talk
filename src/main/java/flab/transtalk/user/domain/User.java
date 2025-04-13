@@ -38,6 +38,9 @@ public class User {
     private List<ChatRoomUser> chatRoomUsers = new ArrayList<>();
 
     public void setProfile(Profile profile) {
+        if (this.profile != null && this.profile != profile) {
+            this.profile.setUser(null);
+        }
         this.profile = profile;
         if (profile != null && profile.getUser() != this){
             profile.setUser(this);

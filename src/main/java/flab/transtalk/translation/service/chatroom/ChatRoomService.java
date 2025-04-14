@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,14 +37,7 @@ public class ChatRoomService {
         ChatRoom chatRoom = ChatRoom.builder()
                 .title(reqDto.getTitle())
                 .build();
-
-        List<ChatRoomUser> links = users.stream()
-                .map(user->ChatRoomUser.builder()
-                        .user(user)
-                        .chatRoom(chatRoom)
-                        .build()
-                ).collect(Collectors.toList());
-        chatRoom.getChatRoomUsers().addAll(links);
+        users.forEach(chatRoom::addUser);
 
         ChatRoom savedChatRoom = chatRoomRepository.save(chatRoom);
         return ChatRoomResponseDto.from(savedChatRoom);

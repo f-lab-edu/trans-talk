@@ -32,7 +32,11 @@ public class ChatRoomService {
         }
         List<User> users = userRepository.findAllByIdIn(reqDto.getParticipantUserIds());
         if (users.size() != reqDto.getParticipantUserIds().size()){
-            throw new NotFoundException(ExceptionMessages.USER_NOT_FOUND_IN_PARTICIPANTS);
+            throw new NotFoundException(
+                    ExceptionMessages.USER_NOT_FOUND_IN_PARTICIPANTS,
+                    Arrays.toString(reqDto.getParticipantUserIds().toArray(Long[]::new)),
+                    Arrays.toString(users.stream().map(target->target.getId()).toArray(Long[]::new))
+            );
         }
         ChatRoom chatRoom = ChatRoom.builder()
                 .title(reqDto.getTitle())

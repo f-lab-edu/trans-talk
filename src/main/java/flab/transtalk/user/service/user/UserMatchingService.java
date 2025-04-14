@@ -17,7 +17,11 @@ public class UserMatchingService {
     public UserResponseDto getUserExcept(Long currentUserId) {
         User user = userRepository.findRandomUserExcept(currentUserId);
         if (user == null){
-            throw new NotFoundException(ExceptionMessages.NO_USER_FOUND);
+            throw new NotFoundException(
+                    ExceptionMessages.NO_USER_FOUND,
+                    currentUserId.toString(),
+                    ""
+            );
         }
         return UserResponseDto.from(user);
     }

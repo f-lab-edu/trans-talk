@@ -30,7 +30,11 @@ public class UserService {
     public UserResponseDto getUser(Long userId) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()){
-            throw new NotFoundException(ExceptionMessages.USER_NOT_FOUND);
+            throw new NotFoundException(
+                    ExceptionMessages.USER_NOT_FOUND,
+                    userId.toString(),
+                    ""
+            );
         }
         return UserResponseDto.from(user.get());
     }

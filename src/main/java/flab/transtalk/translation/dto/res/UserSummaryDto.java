@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Value
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserSummaryDto implements Serializable {
+public class UserSummaryDto {
     Long id;
     String name;
 

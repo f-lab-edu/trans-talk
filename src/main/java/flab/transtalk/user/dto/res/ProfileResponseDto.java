@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Value
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ProfileResponseDto implements Serializable {
+public class ProfileResponseDto {
     Long id;
     String selfIntroduction;
     LanguageSelection language;

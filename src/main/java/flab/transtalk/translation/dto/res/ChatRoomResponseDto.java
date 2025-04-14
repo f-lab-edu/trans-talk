@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Value
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ChatRoomResponseDto implements Serializable {
+public class ChatRoomResponseDto {
     Long id;
     String title;
     List<UserSummaryDto> participants;

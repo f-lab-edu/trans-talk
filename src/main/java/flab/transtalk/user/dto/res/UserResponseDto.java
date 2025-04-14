@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Value
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserResponseDto implements Serializable {
+public class UserResponseDto {
     Long id;
     String name;
     LocalDate birthDate;

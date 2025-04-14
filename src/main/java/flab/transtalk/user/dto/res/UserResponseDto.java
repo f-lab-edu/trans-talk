@@ -21,17 +21,20 @@ public class UserResponseDto implements Serializable {
     LocalDate birthDate;
     ProfileResponseDto profile;
 
-    public static UserResponseDto from(User dto) {
+    public static UserResponseDto from(User user) {
         return UserResponseDto.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .birthDate(dto.getBirthDate())
+                .id(user.getId())
+                .name(user.getName())
+                .birthDate(user.getBirthDate())
                 .profile(
-                        ProfileResponseDto.builder()
-                                .id(dto.getProfile().getId())
-                                .selfIntroduction(dto.getProfile().getSelfIntroduction())
-                                .language(dto.getProfile().getLanguage())
-                                .build()
+                        (user!=null?
+                                ProfileResponseDto.builder()
+                                    .id(user.getProfile().getId())
+                                    .selfIntroduction(user.getProfile().getSelfIntroduction())
+                                    .language(user.getProfile().getLanguage())
+                                    .build() :
+                                null
+                        )
                 )
                 .build();
     }

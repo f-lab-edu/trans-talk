@@ -15,16 +15,27 @@ import java.time.LocalDate;
 @Value
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserResponseDto implements Serializable {
+public class UserResponseDto {
     Long id;
     String name;
     LocalDate birthDate;
+    ProfileResponseDto profile;
 
-    public static UserResponseDto from(User dto) {
+    public static UserResponseDto from(User user) {
         return UserResponseDto.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .birthDate(dto.getBirthDate())
+                .id(user.getId())
+                .name(user.getName())
+                .birthDate(user.getBirthDate())
+                .profile(
+                        (user!=null?
+                                ProfileResponseDto.builder()
+                                    .id(user.getProfile().getId())
+                                    .selfIntroduction(user.getProfile().getSelfIntroduction())
+                                    .language(user.getProfile().getLanguage())
+                                    .build() :
+                                null
+                        )
+                )
                 .build();
     }
 }

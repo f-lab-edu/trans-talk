@@ -1,4 +1,4 @@
-package flab.transtalk.common.exception;
+package flab.transtalk.common.exception.handler;
 
 import flab.transtalk.common.dto.res.ApiErrorResponse;
 import org.springframework.http.ResponseEntity;

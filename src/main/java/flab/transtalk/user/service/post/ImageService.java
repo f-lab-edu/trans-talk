@@ -1,0 +1,60 @@
+package flab.transtalk.user.service.post;
+
+import flab.transtalk.config.ServiceConfigConstants;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
+
+import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class ImageService {
+    // AwsConfig에서 등록한 Bean 사용
+    private final S3Client s3Client;
+    private final S3Presigner presigner;
+
+    @Value("${app.aws.s3.bucket}")
+    private String bucket;
+
+    // image key 생성 및 이미지 업로드
+    public String uploadImageFile(MultipartFile file) throws IOException {
+        // image key 구성: post image folder 이름 + UUID + LocalDate + 확장자
+        String extension = ".jpg";
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
+        String generatedImageKey = ServiceConfigConstants.S3_POST_IMAGE_FOLDER_NAME + UUID.randomUUID() + "-" + timestamp + extension;
+
+        PutObjectRequest req = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(generatedImageKey)
+                .contentType(file.getContentType())
+                .acl(ObjectCannedACL.PRIVATE)
+                .build();
+
+        s3Client.putObject(req, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+        return generatedImageKey;
+    }
+
+    // s3 단일 image 삭제
+    public void deleteImageFile(String imageKey) {
+        s3Client.deleteObject(b -> b.bucket(bucket).key(imageKey));
+    }
+
+    public String generatePresignedUrl(String imageKey, Duration ttl){
+        PresignedGetObjectRequest pre = presigner.presignGetObject(b -> b
+                .signatureDuration(ttl)
+                .getObjectRequest(o -> o.bucket(bucket).key(imageKey)));
+        return pre.url().toString();
+    }
+}

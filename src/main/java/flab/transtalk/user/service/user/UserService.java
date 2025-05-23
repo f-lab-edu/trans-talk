@@ -32,8 +32,7 @@ public class UserService {
         if (user.isEmpty()){
             throw new NotFoundException(
                     ExceptionMessages.USER_NOT_FOUND,
-                    userId.toString(),
-                    ""
+                    userId.toString()
             );
         }
         return UserResponseDto.from(user.get());

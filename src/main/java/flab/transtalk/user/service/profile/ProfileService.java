@@ -23,7 +23,10 @@ public class ProfileService {
 
     public ProfileResponseDto updateProfile(ProfileUpdateRequestDto dto){
         Profile profile = profileRepository.findById(dto.getId())
-                .orElseThrow(() -> new NotFoundException(ExceptionMessages.PROFILE_NOT_FOUND, dto.getId().toString(), ""));
+                .orElseThrow(() -> new NotFoundException(
+                        ExceptionMessages.PROFILE_NOT_FOUND,
+                        dto.getId().toString()
+                ));
 
         if (dto.getSelfIntroduction() != null){
             profile.setSelfIntroduction(dto.getSelfIntroduction());
@@ -39,7 +42,10 @@ public class ProfileService {
     @Transactional
     public ProfileResponseDto getProfile(Long profileId) {
         Profile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> new NotFoundException(ExceptionMessages.PROFILE_NOT_FOUND, profileId.toString(), ""));
+                .orElseThrow(() -> new NotFoundException(
+                        ExceptionMessages.PROFILE_NOT_FOUND,
+                        profileId.toString()
+                ));
 
         ProfileResponseDto res = ProfileResponseDto.from(profile);
         List<PostResponseDto> posts = postService.getPosts(profile.getPosts());

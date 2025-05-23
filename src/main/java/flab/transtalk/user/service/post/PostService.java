@@ -30,7 +30,10 @@ public class PostService {
     // Post 생성 (+ 이미지 업로드)
     public PostResponseDto createPost(PostCreateRequestDto dto) throws IOException {
         Profile profile = profileRepository.findById(dto.getProfileId())
-                .orElseThrow(() -> new NotFoundException(ExceptionMessages.PROFILE_NOT_FOUND, dto.getProfileId().toString(), ""));
+                .orElseThrow(() -> new NotFoundException(
+                        ExceptionMessages.PROFILE_NOT_FOUND,
+                        dto.getProfileId().toString()
+                ));
         String generatedImageKey = imageService.uploadImageFile(dto.getImageFile());
 
 
@@ -51,9 +54,11 @@ public class PostService {
 
     // Post 조회
     public PostResponseDto getPost(Long postId){
-        Post post = postRepository.findById(postId).orElseThrow(() ->
-                new NotFoundException(ExceptionMessages.POST_NOT_FOUND, postId.toString(), "")
-        );
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(
+                        ExceptionMessages.POST_NOT_FOUND,
+                        postId.toString()
+                ));
         String presignedUrl = imageService.generatePresignedUrl(post.getImageKey(), Duration.ofHours(ServiceConfigConstants.PRESIGNED_URL_DURATION_HOUL));
         return PostResponseDto.builder()
                 .Id(post.getId())
@@ -65,7 +70,10 @@ public class PostService {
     // Post 삭제
     public void deletePost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() ->
-                new NotFoundException(ExceptionMessages.POST_NOT_FOUND, postId.toString(), "")
+                new NotFoundException(
+                        ExceptionMessages.POST_NOT_FOUND,
+                        postId.toString()
+                )
         );
         imageService.deleteImageFile(post.getImageKey());
         postRepository.delete(post);

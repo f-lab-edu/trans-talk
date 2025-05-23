@@ -1,5 +1,7 @@
 package flab.transtalk.user.service.post;
 
+import flab.transtalk.common.exception.NotFoundException;
+import flab.transtalk.common.exception.message.ExceptionMessages;
 import flab.transtalk.config.ServiceConfigConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,8 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
@@ -48,10 +49,38 @@ public class ImageService {
 
     // s3 단일 image 삭제
     public void deleteImageFile(String imageKey) {
-        s3Client.deleteObject(b -> b.bucket(bucket).key(imageKey));
+        try {
+            s3Client.deleteObject(DeleteObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(imageKey)
+                    .build());
+        } catch (S3Exception e){
+            if ("NotFound".equals(e.awsErrorDetails().errorCode()) || "NoSuchKey".equals(e.awsErrorDetails().errorCode())) {
+                throw new NotFoundException(
+                        ExceptionMessages.IMAGE_NOT_FOUND,
+                        imageKey
+                );
+            } else {
+                throw e;
+            }
+        }
     }
 
     public String generatePresignedUrl(String imageKey, Duration ttl){
+        try {
+            s3Client.headObject(HeadObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(imageKey)
+                    .build());
+        } catch (S3Exception e) {
+            if ("NotFound".equals(e.awsErrorDetails().errorCode()) || "NoSuchKey".equals(e.awsErrorDetails().errorCode())) {
+                throw new NotFoundException(
+                        ExceptionMessages.IMAGE_NOT_FOUND,
+                        imageKey
+                );
+            }
+            throw e;
+        }
         PresignedGetObjectRequest pre = presigner.presignGetObject(b -> b
                 .signatureDuration(ttl)
                 .getObjectRequest(o -> o.bucket(bucket).key(imageKey)));

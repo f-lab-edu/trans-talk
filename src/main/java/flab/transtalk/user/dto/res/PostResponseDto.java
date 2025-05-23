@@ -9,7 +9,7 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostResponseDto {
-    private Long Id;
+    private Long id;
     private String briefContext;
     private String imagePresignedUrl;
 }

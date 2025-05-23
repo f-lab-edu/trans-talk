@@ -17,8 +17,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static flab.transtalk.common.exception.message.ExceptionMessages.PROFILE_NOT_FOUND;
-
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -44,9 +42,12 @@ public class PostService {
         post.setProfile(profile);
 
         Post saved = postRepository.save(post);
-        String presignedUrl = imageService.generatePresignedUrl(generatedImageKey, Duration.ofHours(ServiceConfigConstants.PRESIGNED_URL_DURATION_HOUL));
+        String presignedUrl = imageService.generatePresignedUrl(
+                generatedImageKey,
+                Duration.ofHours(ServiceConfigConstants.PRESIGNED_URL_DURATION_HOUR)
+        );
         return PostResponseDto.builder()
-                .Id(saved.getId())
+                .id(saved.getId())
                 .briefContext(saved.getBriefContext())
                 .imagePresignedUrl(presignedUrl)      // presignedURL 반환
                 .build();
@@ -59,9 +60,12 @@ public class PostService {
                         ExceptionMessages.POST_NOT_FOUND,
                         postId.toString()
                 ));
-        String presignedUrl = imageService.generatePresignedUrl(post.getImageKey(), Duration.ofHours(ServiceConfigConstants.PRESIGNED_URL_DURATION_HOUL));
+        String presignedUrl = imageService.generatePresignedUrl(
+                post.getImageKey(),
+                Duration.ofHours(ServiceConfigConstants.PRESIGNED_URL_DURATION_HOUR)
+        );
         return PostResponseDto.builder()
-                .Id(post.getId())
+                .id(post.getId())
                 .briefContext(post.getBriefContext())
                 .imagePresignedUrl(presignedUrl)
                 .build();
@@ -85,12 +89,12 @@ public class PostService {
         }
         return posts.stream()
                 .map(post -> PostResponseDto.builder()
-                        .Id(post.getId())
+                        .id(post.getId())
                         .briefContext(post.getBriefContext())
                         .imagePresignedUrl(
                                 imageService.generatePresignedUrl(
                                         post.getImageKey(),
-                                        Duration.ofHours(ServiceConfigConstants.PRESIGNED_URL_DURATION_HOUL)
+                                        Duration.ofHours(ServiceConfigConstants.PRESIGNED_URL_DURATION_HOUR)
                                 )
                         )
                         .build())

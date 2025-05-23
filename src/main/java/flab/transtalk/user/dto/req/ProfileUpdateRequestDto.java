@@ -11,15 +11,6 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProfileUpdateRequestDto {
-    Long id;
     String selfIntroduction;
     LanguageSelection language;
-
-    public Profile toEntity(){
-        return Profile.builder()
-                .id(id)
-                .selfIntroduction(selfIntroduction)
-                .language(language)
-                .build();
-    }
 }

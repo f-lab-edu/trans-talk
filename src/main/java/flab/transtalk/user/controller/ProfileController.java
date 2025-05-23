@@ -15,9 +15,11 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
-    @PutMapping
-    public ResponseEntity<ProfileResponseDto> updateProfile(@RequestBody ProfileUpdateRequestDto dto){
-        return ResponseEntity.status(HttpStatus.OK).body(profileService.updateProfile(dto));
+    @PutMapping("/{profileId}")
+    public ResponseEntity<ProfileResponseDto> updateProfile(
+            @PathVariable Long profileId,
+            @RequestBody ProfileUpdateRequestDto dto){
+        return ResponseEntity.status(HttpStatus.OK).body(profileService.updateProfile(profileId, dto));
     }
 
     @GetMapping("/{profileId}")

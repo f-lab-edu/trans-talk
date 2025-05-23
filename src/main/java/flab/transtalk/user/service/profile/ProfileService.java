@@ -21,11 +21,11 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final PostService postService;
 
-    public ProfileResponseDto updateProfile(ProfileUpdateRequestDto dto){
-        Profile profile = profileRepository.findById(dto.getId())
+    public ProfileResponseDto updateProfile(Long profileId, ProfileUpdateRequestDto dto){
+        Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new NotFoundException(
                         ExceptionMessages.PROFILE_NOT_FOUND,
-                        dto.getId().toString()
+                        profileId.toString()
                 ));
 
         if (dto.getSelfIntroduction() != null){

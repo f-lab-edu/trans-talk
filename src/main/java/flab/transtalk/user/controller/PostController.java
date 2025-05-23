@@ -22,7 +22,7 @@ public class PostController {
     public ResponseEntity<PostResponseDto> createPost(
                 @RequestParam("briefContext") String briefContext,
                 @RequestParam("imageFile") MultipartFile imageFile,
-                @RequestParam("profileId") Long profileId) throws Exception {
+                @RequestParam("profileId") Long profileId) {
 
         PostCreateRequestDto dto = PostCreateRequestDto.builder()
                 .briefContext(briefContext)

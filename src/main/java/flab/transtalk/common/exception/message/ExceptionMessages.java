@@ -9,7 +9,9 @@ public class ExceptionMessages {
     public static final String POST_NOT_FOUND = "존재하지 않는 포스트입니다.";
     public static final String IMAGE_NOT_FOUND = "존재하지 않는 이미지입니다.";
 
+
     // BadRequestException
     public static final String CHAT_ROOM_REQUIRES_AT_LEAST_TWO_USERS = "채팅방에는 최소 2명이상 존재해야 합니다.";
+    public static final String IMAGE_UPLOAD_FAILED = "이미지 업로드 중 오류가 발생했습니다.";
 
 }

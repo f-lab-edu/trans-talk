@@ -1,5 +1,6 @@
 package flab.transtalk.user.service.post;
 
+import flab.transtalk.common.exception.BadRequestException;
 import flab.transtalk.common.exception.NotFoundException;
 import flab.transtalk.common.exception.message.ExceptionMessages;
 import flab.transtalk.config.ServiceConfigConstants;
@@ -27,15 +28,18 @@ public class PostService {
     private final ImageService imageService;
 
     // Post 생성 (+ 이미지 업로드)
-    public PostResponseDto createPost(PostCreateRequestDto dto) throws IOException {
+    public PostResponseDto createPost(PostCreateRequestDto dto) {
         Profile profile = profileRepository.findById(dto.getProfileId())
                 .orElseThrow(() -> new NotFoundException(
                         ExceptionMessages.PROFILE_NOT_FOUND,
                         dto.getProfileId().toString()
                 ));
-        String generatedImageKey = imageService.uploadImageFile(dto.getImageFile());
-
-
+        String generatedImageKey;
+        try {
+            generatedImageKey = imageService.uploadImageFile(dto.getImageFile());
+        } catch (IOException e) {
+            throw new BadRequestException(ExceptionMessages.IMAGE_UPLOAD_FAILED);
+        }
         Post post = Post.builder()
                 .briefContext(dto.getBriefContext())
                 .imageKey(generatedImageKey)

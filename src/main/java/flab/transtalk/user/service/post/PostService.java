@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,7 +86,7 @@ public class PostService {
 
     public List<PostResponseDto> getPosts(List<Post> posts) {
         if (posts == null){
-            return null;
+            return Collections.emptyList();
         }
         return posts.stream()
                 .map(post -> PostResponseDto.builder()

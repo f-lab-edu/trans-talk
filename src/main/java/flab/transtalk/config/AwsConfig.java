@@ -14,12 +14,14 @@ public class AwsConfig {
     @Value("${app.aws.s3.region}")
     private String region;
 
+    private final DefaultCredentialsProvider credentialsProvider = DefaultCredentialsProvider.create();
+
     @Bean
     public S3Client s3Client() {
         // DefaultCredentialsProvider: 환경 변수, EC2 Role 등 순차 탐색
         return S3Client.builder()
                 .region(Region.of(region))
-                .credentialsProvider(DefaultCredentialsProvider.create())
+                .credentialsProvider(credentialsProvider)
                 .build();
     }
 
@@ -27,7 +29,7 @@ public class AwsConfig {
     public S3Presigner s3Presigner(){
         return S3Presigner.builder()
                 .region(Region.of(region))
-                .credentialsProvider(DefaultCredentialsProvider.create())
+                .credentialsProvider(credentialsProvider)
                 .build();
     }
 }

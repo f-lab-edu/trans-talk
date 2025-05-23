@@ -19,8 +19,7 @@ public class UserMatchingService {
         if (user == null){
             throw new NotFoundException(
                     ExceptionMessages.NO_USER_FOUND,
-                    currentUserId.toString(),
-                    ""
+                    currentUserId.toString()
             );
         }
         return UserResponseDto.from(user);

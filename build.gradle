@@ -23,10 +23,18 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	awsSdkVersion = '2.31.2'                               // AWS SDK v2 BOM 버전(2025‑04 기준 최신)
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	implementation platform("software.amazon.awssdk:bom:${awsSdkVersion}")   	// SDK v2 BOM – 다중 모듈 버전 통일
+	implementation 'software.amazon.awssdk:s3'                                 	// S3 클라이언트 모듈만 사용
+
     compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'

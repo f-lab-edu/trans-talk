@@ -8,6 +8,9 @@ import lombok.Builder;
 import lombok.Value;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * DTO for {@link Profile}
@@ -19,4 +22,14 @@ public class ProfileResponseDto {
     Long id;
     String selfIntroduction;
     LanguageSelection language;
+    @Builder.Default
+    List<PostResponseDto> posts = new ArrayList<>();
+
+    public static ProfileResponseDto from(Profile entity){
+        return ProfileResponseDto.builder()
+                .id(entity.getId())
+                .selfIntroduction(entity.getSelfIntroduction())
+                .language(entity.getLanguage())
+                .build();
+    }
 }

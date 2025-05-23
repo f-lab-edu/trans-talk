@@ -7,11 +7,15 @@ import java.util.List;
 
 @Getter
 public class NotFoundException extends RuntimeException {
-    private String inputIds;
-    private String foundIds;
-    public NotFoundException(String message, String inputIds, String foundIds){
+    private String input;
+    private String output;
+    public NotFoundException(String message, String input){
         super(message);
-        this.inputIds = inputIds;
-        this.foundIds = foundIds;
+        this.input = input;
+    }
+    public NotFoundException(String message, String input, String output){
+        super(message);
+        this.input = input;
+        this.output = output;
     }
 }

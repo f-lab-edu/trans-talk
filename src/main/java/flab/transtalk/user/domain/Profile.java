@@ -4,6 +4,9 @@ import flab.transtalk.common.enums.LanguageSelection;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -29,6 +32,17 @@ public class Profile {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Post> posts = new ArrayList<>();
+
+    public void setSelfIntroduction(String selfIntroduction){
+        this.selfIntroduction = selfIntroduction;
+    }
+    public void setLanguage(LanguageSelection language){
+        this.language = language;
+    }
+
     public void setUser(User user) {
         if (this.user != null && this.user != user){
             this.user.setProfile(null);
@@ -36,6 +50,23 @@ public class Profile {
         this.user = user;
         if (user != null && user.getProfile() != this){
             user.setProfile(this);
+        }
+    }
+
+    public void removePost(Post post) {
+        if (post == null){
+            return;
+        }
+        this.posts.remove(post);
+    }
+
+    public void addPost(Post post) {
+        if (post == null || this.getPosts().contains(post)){
+            return;
+        }
+        this.posts.add(post);
+        if (post.getProfile() != this){
+            post.setProfile(this);
         }
     }
 }

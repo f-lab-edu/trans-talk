@@ -21,6 +21,7 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final PostService postService;
 
+    @Transactional
     public ProfileResponseDto updateProfile(Long profileId, ProfileUpdateRequestDto dto){
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new NotFoundException(
@@ -35,11 +36,10 @@ public class ProfileService {
             profile.setLanguage(dto.getLanguage());
         }
 
-        Profile updated = profileRepository.save(profile);
-        return ProfileResponseDto.from(updated);
+        return ProfileResponseDto.from(profile);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ProfileResponseDto getProfile(Long profileId) {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new NotFoundException(

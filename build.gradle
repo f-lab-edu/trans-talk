@@ -34,6 +34,7 @@ dependencies {
 
 	implementation platform("software.amazon.awssdk:bom:${awsSdkVersion}")   	// SDK v2 BOM – 다중 모듈 버전 통일
 	implementation 'software.amazon.awssdk:s3'                                 	// S3 클라이언트 모듈만 사용
+	implementation 'org.apache.tika:tika-core:2.9.0'							// 실제 콘텐츠 타입을 판별을 위해 사용
 
     compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

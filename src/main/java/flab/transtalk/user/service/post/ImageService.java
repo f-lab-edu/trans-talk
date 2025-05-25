@@ -1,9 +1,11 @@
 package flab.transtalk.user.service.post;
 
+import flab.transtalk.common.exception.BadRequestException;
 import flab.transtalk.common.exception.NotFoundException;
 import flab.transtalk.common.exception.message.ExceptionMessages;
 import flab.transtalk.config.ServiceConfigConstants;
 import lombok.RequiredArgsConstructor;
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +19,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -29,17 +32,30 @@ public class ImageService {
     @Value("${app.aws.s3.bucket}")
     private String bucket;
 
+    private static final Tika tika = new Tika();
+
+    public static final Map<String, String> SUPPORTED_IMAGE_TYPES = Map.of(
+            "image/jpeg", ".jpg",
+            "image/png", ".png"
+    );
+
     // image key 생성 및 이미지 업로드
     public String uploadImageFile(MultipartFile file) throws IOException {
+        String detectedContentType = tika.detect(file.getInputStream());
         // image key 구성: post image folder 이름 + UUID + LocalDate + 확장자
-        String extension = ".jpg";
+        String extension = SUPPORTED_IMAGE_TYPES.get(detectedContentType);
+        if (extension == null){
+            throw new BadRequestException(
+                    String.format(ExceptionMessages.UNSUPPORTED_IMAGE_FORMAT, detectedContentType)
+            );
+        };
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
         String generatedImageKey = ServiceConfigConstants.S3_POST_IMAGE_FOLDER_NAME + UUID.randomUUID() + "-" + timestamp + extension;
 
         PutObjectRequest req = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(generatedImageKey)
-                .contentType(file.getContentType())
+                .contentType(detectedContentType)
                 .acl(ObjectCannedACL.PRIVATE)
                 .build();
 

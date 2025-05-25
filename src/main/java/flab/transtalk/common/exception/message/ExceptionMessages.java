@@ -13,5 +13,6 @@ public class ExceptionMessages {
     // BadRequestException
     public static final String CHAT_ROOM_REQUIRES_AT_LEAST_TWO_USERS = "채팅방에는 최소 2명이상 존재해야 합니다.";
     public static final String IMAGE_UPLOAD_FAILED = "이미지 업로드 중 오류가 발생했습니다.";
+    public static final String UNSUPPORTED_IMAGE_FORMAT = "지원하지 않는 이미지 형식입니다: %s";
 
 }

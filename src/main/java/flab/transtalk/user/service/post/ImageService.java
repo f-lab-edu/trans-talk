@@ -48,7 +48,7 @@ public class ImageService {
             throw new BadRequestException(
                     String.format(ExceptionMessages.UNSUPPORTED_IMAGE_FORMAT, detectedContentType)
             );
-        };
+        }
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
         String generatedImageKey = ServiceConfigConstants.S3_POST_IMAGE_FOLDER_NAME + UUID.randomUUID() + "-" + timestamp + extension;
 

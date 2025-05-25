@@ -17,8 +17,10 @@ public class CustomExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleNotFoundException(NotFoundException e){
         List<String> errors = new ArrayList<>();
         errors.add(e.getMessage());
-        errors.add("inputIds: "+e.getInputIds());
-        errors.add("foundIds: "+e.getFoundIds());
+        errors.add("input: "+e.getInput());
+        if (e.getOutput() != null){
+            errors.add("output: "+e.getOutput());
+        }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiErrorResponse("NOT_FOUND", errors));
     }
     @ExceptionHandler(BadRequestException.class)

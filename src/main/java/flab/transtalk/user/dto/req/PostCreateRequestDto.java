@@ -5,7 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Value
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostCreateRequestDto {
     private String briefContext;
     private MultipartFile imageFile;

@@ -37,8 +37,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '19'
-          distribution: 'adopt'
+          java-version: '17'
+          distribution: 'temurin'
 
       - name: Create Sonar Gradle File
         run: |
@@ -66,7 +66,7 @@ jobs:
           
 
       - name: Analyze
-        run: ./gradlew sonar -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} -Dsonar.organization=f-lab-edu-1 -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=${{ secrets.SECRET_SONARQUBE }} -Dsonar.gradle.skipCompile=true
+        run: ./gradlew sonarqube -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} -Dsonar.organization=f-lab-edu-1 -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=${{ secrets.SECRET_SONARQUBE }} -Dsonar.gradle.skipCompile=true
         env:
           SONAR_TOKEN: ${{ secrets.SECRET_SONARQUBE }}
 

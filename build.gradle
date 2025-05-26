@@ -31,10 +31,18 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+	// S3
 	implementation platform("software.amazon.awssdk:bom:${awsSdkVersion}")   	// SDK v2 BOM – 다중 모듈 버전 통일
 	implementation 'software.amazon.awssdk:s3'                                 	// S3 클라이언트 모듈만 사용
 	implementation 'org.apache.tika:tika-core:2.9.0'							// 실제 콘텐츠 타입을 판별을 위해 사용
+
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
     compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

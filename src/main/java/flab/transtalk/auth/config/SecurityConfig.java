@@ -1,5 +1,6 @@
 package flab.transtalk.auth.config;
 
+import flab.transtalk.auth.security.jwt.JwtAuthenticationEntryPoint;
 import flab.transtalk.auth.security.jwt.JwtAuthenticationFilter;
 import flab.transtalk.auth.service.CustomOAuth2UserService;
 import flab.transtalk.auth.security.oauth.OAuth2SuccessHandler;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
@@ -36,6 +38,8 @@ public class SecurityConfig {
                 );
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.exceptionHandling(ex -> ex
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint));
         return http.build();
     }
 }

@@ -37,6 +37,27 @@ spring:
       hibernate.format_sql: true
       hibernate.default_batch_fetch_size: 1000
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - email
+              - profile
+        provider:
+          google:
+            user-name-attribute: sub
+      frontend:
+        redirect-uri: ${OAUTH2_FRONTEND_REDIRECT_URI}
+
+jwt:
+  secret: ${JWT_SECRET_BASE64}
+  expiration: 3600000 # 1 hour in ms
+
 #  # use data.sql file for dummy data
 #  sql.init.mode: always
 

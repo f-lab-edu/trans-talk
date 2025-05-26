@@ -25,10 +25,10 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String createToken(String email, String role) {
+    public String createToken(String subject, String role) {
         Date now = new Date();
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(subject)
                 .claim("role", role)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + expiration))

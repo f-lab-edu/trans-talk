@@ -1,5 +1,6 @@
 package flab.transtalk.user.domain;
 
+import flab.transtalk.auth.domain.AuthProvider;
 import flab.transtalk.translation.domain.ChatRoomUser;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -9,7 +10,12 @@ import java.util.List;
 import lombok.*;
 
 @Entity
-@Table(name = "users")
+@Table(
+        name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_provider_pid", columnNames = {"provider", "provider_id"}),
+        }
+)
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,6 +32,16 @@ public class User {
 
     @Column(name = "name", length = 50)
     private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AuthProvider provider;
+
+    @Column(name = "provider_id", nullable = false)
+    private String providerId;
+
+    @Column(name = "email")
+    private String email;
 
     @Column(name = "birth_date", columnDefinition = "DATE")
     private LocalDate birthDate;

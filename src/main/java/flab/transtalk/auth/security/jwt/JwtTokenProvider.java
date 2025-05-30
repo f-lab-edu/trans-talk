@@ -2,6 +2,8 @@ package flab.transtalk.auth.security.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,8 @@ public class JwtTokenProvider {
 
     @PostConstruct
     private void init() {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+
+        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String createToken(String subject, String role) {

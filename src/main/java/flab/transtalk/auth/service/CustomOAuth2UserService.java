@@ -2,6 +2,7 @@ package flab.transtalk.auth.service;
 import java.util.Collections;
 
 import flab.transtalk.auth.domain.AuthProvider;
+import flab.transtalk.auth.exception.message.JwtExceptionMessages;
 import flab.transtalk.user.domain.User;
 import flab.transtalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 providerId = (String) oAuth2User.getAttribute("sub");
                 nameAttributeKey = "sub";
             }
-            default -> throw new OAuth2AuthenticationException("Unsupported provider: " + registrationId);
+            default -> throw new OAuth2AuthenticationException(JwtExceptionMessages.AUTH_FAILED);
         }
         String email = (String) oAuth2User.getAttribute("email");
         String name = (String) oAuth2User.getAttribute("name");

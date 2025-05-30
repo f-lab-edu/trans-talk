@@ -9,6 +9,7 @@ import flab.transtalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,8 +24,8 @@ public class UserService {
         return userSignUpService.signUp(dto);
     }
 
-    public UserResponseDto getUserExcept(Long currentUserId) {
-        return userMatchingService.getUserExcept(currentUserId);
+    public List<UserResponseDto> getUsersExcept(Long currentUserId) {
+        return userMatchingService.getUsersExcept(currentUserId);
     }
 
     public UserResponseDto getUser(Long userId) {

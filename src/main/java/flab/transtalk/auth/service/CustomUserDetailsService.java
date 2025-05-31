@@ -1,9 +1,8 @@
 package flab.transtalk.auth.service;
 
-import flab.transtalk.auth.domain.ProviderInfo;
+import flab.transtalk.auth.exception.JwtAuthenticationException;
 import flab.transtalk.auth.exception.message.JwtExceptionMessages;
 import flab.transtalk.auth.security.principal.CustomUserDetails;
-import flab.transtalk.auth.domain.AuthProvider;
 import flab.transtalk.user.domain.User;
 import flab.transtalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,21 +23,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String subject) throws UsernameNotFoundException {
-        ProviderInfo providerInfo = ProviderInfo.fromSubject(subject);
+    public UserDetails loadUserByUsername(String externalId) throws UsernameNotFoundException {
+        User user = userRepository.findByExternalId(externalId)
+                .orElseThrow(() -> new UsernameNotFoundException(JwtExceptionMessages.USER_NOT_FOUND));
 
-        User user = userRepository
-                .findByProviderAndProviderId(providerInfo.getProvider(), providerInfo.getProviderId())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + subject));
-
-        // JWT subject를 username으로 사용
-        return toUserDetails(user.getId(), subject);
-    }
-
-    private UserDetails toUserDetails(long userId, String username) {
         return CustomUserDetails.builder()
-                .userId(userId)
-                .username(username)
+                .userId(user.getId())
+                .username(externalId)
                 .authorities(Collections.singleton(new SimpleGrantedAuthority(DEFAULT_ROLE)))
                 .build();
     }

@@ -13,10 +13,10 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.id <> :userId")
     List<User> findAllExcept(@Param("userId") Long userId, Pageable pageable);
-
     long countByIdNot(Long userId);
 
     List<User> findAllByIdIn(List<Long> ids);
 
     Optional<User> findByProviderAndProviderId(AuthProvider provider, String providerId);
+    Optional<User> findByExternalId(String externalId);
 }

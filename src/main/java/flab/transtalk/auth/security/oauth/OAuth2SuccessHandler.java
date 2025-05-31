@@ -38,13 +38,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String registrationId = authToken.getAuthorizedClientRegistrationId();
 
         ProviderInfo providerInfo = ProviderInfo.fromOAuth2User(registrationId, oAuth2User);
-        String nameAttributeKey = providerInfo.getNameAttributeKey();
 
         User user = userRepository
                 .findByProviderAndProviderId(providerInfo.getProvider(), providerInfo.getProviderId())
                 .orElseThrow(() -> new OAuth2AuthenticationException(JwtExceptionMessages.AUTH_FAILED));
 
-        String subject = providerInfo.toSubject();
+        String subject = user.getExternalId();
         String jwt = jwtTokenProvider.createToken(subject, DEFAULT_ROLE);
 
         String redirectUrl = UriComponentsBuilder.fromUriString(this.redirectUri)

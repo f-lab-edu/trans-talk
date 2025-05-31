@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import lombok.*;
 
@@ -17,7 +18,6 @@ import lombok.*;
         }
 )
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class User {
@@ -40,6 +40,9 @@ public class User {
     @Column(name = "provider_id", nullable = false)
     private String providerId;
 
+    @Column(name = "external_id", unique = true, nullable = false, length = 36)
+    private String externalId;
+
     @Column(name = "email")
     private String email;
 
@@ -50,8 +53,25 @@ public class User {
     private Profile profile;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Builder.Default
     private List<ChatRoomUser> chatRoomUsers = new ArrayList<>();
+
+    @Builder
+    private User(String name, AuthProvider provider, String providerId, String email, LocalDate birthDate) {
+        this.name       = name;
+        this.provider   = provider;
+        this.providerId = providerId;
+        this.email      = email;
+        this.birthDate  = birthDate;
+        // externalId 는 null -> @PrePersist에서 자동 생성
+        // 외부에서 주입되지 않도록 방지
+    }
+
+    @PrePersist
+    private void ensureExternalId() {
+        if (externalId == null) {
+            externalId = UUID.randomUUID().toString();
+        }
+    }
 
     public void setProfile(Profile profile) {
         if (this.profile != null && this.profile != profile) {

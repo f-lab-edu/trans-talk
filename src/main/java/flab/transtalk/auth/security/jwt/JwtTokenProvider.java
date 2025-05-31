@@ -1,6 +1,6 @@
 package flab.transtalk.auth.security.jwt;
 import flab.transtalk.auth.exception.JwtAuthenticationException;
-import flab.transtalk.auth.exception.message.JwtExceptionMessages;
+import flab.transtalk.auth.exception.JwtErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -57,13 +57,11 @@ public class JwtTokenProvider {
                     .build()
                     .parseClaimsJws(token);
         } catch (ExpiredJwtException e) {
-            throw new JwtAuthenticationException(
-                    "TOKEN_EXPIRED",
-                    JwtExceptionMessages.TOKEN_EXPIRED, e);
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new JwtAuthenticationException(
-                    "INVALID_SIGNATURE",
-                    JwtExceptionMessages.INVALID_SIGNATURE, e);
+            throw new JwtAuthenticationException(JwtErrorCode.TOKEN_EXPIRED, e);
+        } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+            throw new JwtAuthenticationException(JwtErrorCode.MALFORMED_TOKEN, e);
+        } catch (SignatureException e) {
+            throw new JwtAuthenticationException(JwtErrorCode.INVALID_SIGNATURE, e);
         }
     }
 }

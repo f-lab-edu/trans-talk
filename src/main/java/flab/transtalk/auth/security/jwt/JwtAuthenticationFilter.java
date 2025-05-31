@@ -1,7 +1,7 @@
 package flab.transtalk.auth.security.jwt;
 
 import flab.transtalk.auth.exception.JwtAuthenticationException;
-import flab.transtalk.auth.exception.message.JwtExceptionMessages;
+import flab.transtalk.auth.exception.JwtErrorCode;
 import io.jsonwebtoken.*;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -40,9 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             } catch (JwtAuthenticationException | OAuth2AuthenticationException e) {
                 throw e;
             } catch (RuntimeException e) {
-                throw new JwtAuthenticationException(
-                        "AUTH_FAILED",
-                        JwtExceptionMessages.AUTH_FAILED, e);
+                throw new JwtAuthenticationException(JwtErrorCode.AUTH_FAILED, e);
             }
         }
         filterChain.doFilter(request, response);

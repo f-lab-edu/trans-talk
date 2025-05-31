@@ -2,6 +2,7 @@ package flab.transtalk.auth.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import flab.transtalk.auth.exception.JwtAuthenticationException;
+import flab.transtalk.auth.exception.JwtErrorCode;
 import flab.transtalk.common.dto.res.ApiErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,19 +26,20 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException ex) throws IOException {
 
+        JwtErrorCode ec = (ex instanceof JwtAuthenticationException jae)
+                ? jae.getErrorCode()
+                : JwtErrorCode.AUTH_FAILED;
         String code  = "AUTH_FAILED";
         String message   = "인증 실패";
 
-        if (ex instanceof JwtAuthenticationException jwtEx) {
-            code = jwtEx.getCode();
-            message  = jwtEx.getMessage();
-        }
+        log.warn("[AUTH] {} - {}", ec.getCode(), ec.getMessage());
 
-        log.warn("[AUTH] {} - {}", code, message);
+        ApiErrorResponse body = new ApiErrorResponse(
+                ec.getCode(),
+                List.of(ec.getMessage())
+        );
 
-        ApiErrorResponse body = new ApiErrorResponse(code, List.of(message));
-
-        response.setStatus(code.equals("MALFORMED_TOKEN") ? 400 : 401);
+        response.setStatus(ec.getStatus().value());
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8");
         om.writeValue(response.getWriter(), body);

@@ -29,8 +29,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         JwtErrorCode ec = (ex instanceof JwtAuthenticationException jae)
                 ? jae.getErrorCode()
                 : JwtErrorCode.AUTH_FAILED;
-        String code  = "AUTH_FAILED";
-        String message   = "인증 실패";
 
         log.warn("[AUTH] {} - {}", ec.getCode(), ec.getMessage());
 

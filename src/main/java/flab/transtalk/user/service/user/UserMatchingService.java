@@ -31,6 +31,6 @@ public class UserMatchingService {
         if (users==null){
             return List.of();
         }
-        return users.stream().map(user->UserResponseDto.from(user)).collect(Collectors.toList());
+        return users.stream().map(UserResponseDto::from).toList();
     }
 }

@@ -1,6 +1,5 @@
 package flab.transtalk.user.repository;
 
-import flab.transtalk.auth.domain.AuthProvider;
 import flab.transtalk.user.domain.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -2,7 +2,6 @@ package flab.transtalk.auth.security.jwt;
 
 import flab.transtalk.auth.exception.JwtAuthenticationException;
 import flab.transtalk.auth.exception.JwtErrorCode;
-import io.jsonwebtoken.*;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

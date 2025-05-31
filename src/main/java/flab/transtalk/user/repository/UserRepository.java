@@ -17,6 +17,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByIdIn(List<Long> ids);
 
-    Optional<User> findByProviderAndProviderId(AuthProvider provider, String providerId);
     Optional<User> findByExternalId(String externalId);
 }

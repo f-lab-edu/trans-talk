@@ -1,5 +1,6 @@
 package flab.transtalk.user.domain;
 
+import flab.transtalk.auth.domain.AuthAccount;
 import flab.transtalk.auth.domain.AuthProvider;
 import flab.transtalk.translation.domain.ChatRoomUser;
 import jakarta.persistence.*;
@@ -33,21 +34,14 @@ public class User {
     @Column(name = "name", length = 50)
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AuthProvider provider;
-
-    @Column(name = "provider_id", nullable = false)
-    private String providerId;
-
-    @Column(name = "external_id", unique = true, nullable = false, length = 36)
-    private String externalId;
-
     @Column(name = "email")
     private String email;
 
     @Column(name = "birth_date", columnDefinition = "DATE")
     private LocalDate birthDate;
+
+    @Column(name = "external_id", unique = true, nullable = false, length = 36)
+    private String externalId;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Profile profile;
@@ -55,11 +49,12 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ChatRoomUser> chatRoomUsers = new ArrayList<>();
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private AuthAccount authAccount;
+
     @Builder
-    private User(String name, AuthProvider provider, String providerId, String email, LocalDate birthDate) {
+    private User(String name, String email, LocalDate birthDate) {
         this.name       = name;
-        this.provider   = provider;
-        this.providerId = providerId;
         this.email      = email;
         this.birthDate  = birthDate;
         // externalId 는 null -> @PrePersist에서 자동 생성

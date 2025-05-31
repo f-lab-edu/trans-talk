@@ -46,7 +46,11 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Jws<Claims> parseClaims(String token) {
+    public String getSubject(String token) {
+        return parseClaims(token).getBody().getSubject();
+    }
+
+    private Jws<Claims> parseClaims(String token) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)

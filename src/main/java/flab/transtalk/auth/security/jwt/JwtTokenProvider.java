@@ -1,10 +1,13 @@
 package flab.transtalk.auth.security.jwt;
+import flab.transtalk.auth.exception.JwtAuthenticationException;
+import flab.transtalk.auth.exception.message.JwtExceptionMessages;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Map;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,9 +43,19 @@ public class JwtTokenProvider {
     }
 
     public Jws<Claims> parseClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token);
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+        } catch (ExpiredJwtException e) {
+            throw new JwtAuthenticationException(
+                    "TOKEN_EXPIRED",
+                    JwtExceptionMessages.TOKEN_EXPIRED, e);
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new JwtAuthenticationException(
+                    "INVALID_SIGNATURE",
+                    JwtExceptionMessages.INVALID_SIGNATURE, e);
+        }
     }
 }

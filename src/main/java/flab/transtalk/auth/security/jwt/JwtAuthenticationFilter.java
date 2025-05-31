@@ -37,22 +37,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-            } catch (ExpiredJwtException e) {
-                throw new JwtAuthenticationException(
-                        "TOKEN_EXPIRED",
-                        JwtExceptionMessages.TOKEN_EXPIRED, e);
-
-            } catch (SignatureException e) {
-                throw new JwtAuthenticationException(
-                        "INVALID_SIGNATURE",
-                        JwtExceptionMessages.INVALID_SIGNATURE, e);
-
-            } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-                throw new JwtAuthenticationException(
-                        "MALFORMED_TOKEN",
-                        JwtExceptionMessages.MALFORMED_TOKEN, e);
-
-            } catch (Exception e) {
+            } catch (JwtAuthenticationException e) {
+                throw e;
+            } catch (RuntimeException e) {
                 throw new JwtAuthenticationException(
                         "AUTH_FAILED",
                         JwtExceptionMessages.AUTH_FAILED, e);

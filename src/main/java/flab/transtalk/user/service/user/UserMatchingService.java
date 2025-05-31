@@ -18,14 +18,14 @@ import flab.transtalk.config.ServiceConfigConstants;
 public class UserMatchingService {
 
     private final UserRepository userRepository;
-
+    private static final Random RANDOM = new Random();
     public List<UserResponseDto> getUsersExcept(Long currentUserId) {
         long total = userRepository.countByIdNot(currentUserId);
         if (total==0l){
             return List.of();
         }
         int maxOffset = (int) Math.max(total - ServiceConfigConstants.MATCHING_USERS_MAX_NUMBER, 0);
-        int randomOffset = new Random().nextInt(maxOffset + 1);
+        int randomOffset = RANDOM.nextInt(maxOffset + 1);
         PageRequest pageRequest = PageRequest.of(randomOffset, ServiceConfigConstants.MATCHING_USERS_MAX_NUMBER);
         List<User> users = userRepository.findAllExcept(currentUserId, pageRequest);
         if (users==null){

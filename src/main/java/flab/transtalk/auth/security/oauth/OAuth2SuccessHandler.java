@@ -1,6 +1,7 @@
 package flab.transtalk.auth.security.oauth;
 import flab.transtalk.auth.domain.AuthProvider;
 import flab.transtalk.auth.domain.ProviderInfo;
+import flab.transtalk.auth.exception.message.JwtExceptionMessages;
 import flab.transtalk.auth.security.jwt.JwtTokenProvider;
 import flab.transtalk.user.domain.User;
 import flab.transtalk.user.repository.UserRepository;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -40,7 +42,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         User user = userRepository
                 .findByProviderAndProviderId(providerInfo.getProvider(), providerInfo.getProviderId())
-                .orElseThrow();
+                .orElseThrow(() -> new OAuth2AuthenticationException(JwtExceptionMessages.AUTH_FAILED));
 
         String subject = providerInfo.toSubject();
         String jwt = jwtTokenProvider.createToken(subject, DEFAULT_ROLE);

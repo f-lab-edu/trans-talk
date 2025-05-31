@@ -1,9 +1,8 @@
 package flab.transtalk.auth.service;
 import java.util.Collections;
+import java.util.Map;
 
-import flab.transtalk.auth.domain.AuthProvider;
 import flab.transtalk.auth.domain.ProviderInfo;
-import flab.transtalk.auth.exception.message.JwtExceptionMessages;
 import flab.transtalk.user.domain.User;
 import flab.transtalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +24,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
-
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
         ProviderInfo providerInfo = ProviderInfo.fromOAuth2User(registrationId, oAuth2User);
         String nameAttributeKey = providerInfo.getNameAttributeKey();
-
         String email = (String) oAuth2User.getAttribute("email");
         String name = (String) oAuth2User.getAttribute("name");
 
@@ -43,9 +40,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         .name(name)
                         .build()));
 
+        Map<String, Object> exposed = Map.of(
+                nameAttributeKey, providerInfo.getProviderId()
+        );
+
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(DEFAULT_ROLE)),
-                oAuth2User.getAttributes(),
+                exposed,
                 nameAttributeKey);
     }
 }

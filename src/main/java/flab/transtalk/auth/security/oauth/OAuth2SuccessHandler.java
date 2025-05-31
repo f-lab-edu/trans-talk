@@ -1,5 +1,6 @@
 package flab.transtalk.auth.security.oauth;
 import flab.transtalk.auth.domain.AuthProvider;
+import flab.transtalk.auth.domain.ProviderInfo;
 import flab.transtalk.auth.security.jwt.JwtTokenProvider;
 import flab.transtalk.user.domain.User;
 import flab.transtalk.user.repository.UserRepository;
@@ -31,26 +32,17 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String registrationId = authToken.getAuthorizedClientRegistrationId();
 
-        AuthProvider provider;
-        String nameAttributeKey;
-        switch (registrationId) {
-            case "google" -> {
-                provider = AuthProvider.GOOGLE;
-                nameAttributeKey = "sub";
-            }
-            default -> throw new IllegalStateException("미지원 소셜: " + registrationId);
-        }
-
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        String providerId = (String) oAuth2User.getAttributes().get(nameAttributeKey);
+        ProviderInfo providerInfo = ProviderInfo.fromOAuth2User(registrationId, oAuth2User);
+        String nameAttributeKey = providerInfo.getNameAttributeKey();
 
         User user = userRepository
-                .findByProviderAndProviderId(provider, providerId)
+                .findByProviderAndProviderId(providerInfo.getProvider(), providerInfo.getProviderId())
                 .orElseThrow();
 
-        String subject = user.getProvider() + ":" + user.getProviderId();
+        String subject = providerInfo.toSubject();
         String jwt = jwtTokenProvider.createToken(subject, DEFAULT_ROLE);
 
         String redirectUrl = UriComponentsBuilder.fromUriString(this.redirectUri)

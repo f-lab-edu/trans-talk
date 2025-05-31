@@ -2,6 +2,7 @@ package flab.transtalk.auth.service;
 import java.util.Collections;
 
 import flab.transtalk.auth.domain.AuthProvider;
+import flab.transtalk.auth.domain.ProviderInfo;
 import flab.transtalk.auth.exception.message.JwtExceptionMessages;
 import flab.transtalk.user.domain.User;
 import flab.transtalk.user.repository.UserRepository;
@@ -26,25 +27,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        String providerId;
-        String nameAttributeKey;
-        AuthProvider provider;
-        switch (registrationId.toLowerCase()) {
-            case "google" -> {
-                provider = AuthProvider.GOOGLE;
-                providerId = (String) oAuth2User.getAttribute("sub");
-                nameAttributeKey = "sub";
-            }
-            default -> throw new OAuth2AuthenticationException(JwtExceptionMessages.AUTH_FAILED);
-        }
+
+        ProviderInfo providerInfo = ProviderInfo.fromOAuth2User(registrationId, oAuth2User);
+        String nameAttributeKey = providerInfo.getNameAttributeKey();
+
         String email = (String) oAuth2User.getAttribute("email");
         String name = (String) oAuth2User.getAttribute("name");
 
         User user = userRepository
-                .findByProviderAndProviderId(provider, providerId)
+                .findByProviderAndProviderId(providerInfo.getProvider(), providerInfo.getProviderId())
                 .orElseGet(() -> userRepository.save(User.builder()
-                        .provider(provider)
-                        .providerId(providerId)
+                        .provider(providerInfo.getProvider())
+                        .providerId(providerInfo.getProviderId())
                         .email(email)
                         .name(name)
                         .build()));

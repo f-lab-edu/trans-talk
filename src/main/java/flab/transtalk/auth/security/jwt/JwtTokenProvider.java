@@ -32,10 +32,14 @@ public class JwtTokenProvider {
     }
 
     public String createToken(String subject, String role) {
+        return createToken(subject, Map.of("role", role));
+    }
+
+    public String createToken(String subject, Map<String, Object> claims) {
         Date now = new Date();
         return Jwts.builder()
                 .setSubject(subject)
-                .claim("role", role)
+                .addClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + expiration))
                 .signWith(key, SignatureAlgorithm.HS256)

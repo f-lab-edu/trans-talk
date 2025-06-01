@@ -1,6 +1,7 @@
 package flab.transtalk.user.controller;
 
 import flab.transtalk.user.dto.req.UserCreateRequestDto;
+import flab.transtalk.user.dto.res.UserListResponseDto;
 import flab.transtalk.user.dto.res.UserResponseDto;
 import flab.transtalk.user.service.user.UserService;
 import jakarta.validation.Valid;
@@ -28,7 +29,11 @@ public class UserController {
 
     // 주어진 사용자 제외, 무작위 사용자 호출
     @GetMapping("/matching/{currentUserId}")
-    public ResponseEntity<UserResponseDto> getMatchingUser(@PathVariable Long currentUserId){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserExcept(currentUserId));
+    public ResponseEntity<UserListResponseDto> getMatchingUsers(@PathVariable Long currentUserId){
+        return ResponseEntity.status(HttpStatus.OK).body(
+                UserListResponseDto.builder()
+                        .users(userService.getUsersExcept(currentUserId))
+                        .build()
+        );
     }
 }

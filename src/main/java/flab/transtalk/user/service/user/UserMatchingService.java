@@ -1,27 +1,35 @@
 package flab.transtalk.user.service.user;
 
-import flab.transtalk.common.exception.NotFoundException;
-import flab.transtalk.common.exception.message.ExceptionMessages;
 import flab.transtalk.user.domain.User;
 import flab.transtalk.user.dto.res.UserResponseDto;
 import flab.transtalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Random;
+
+import flab.transtalk.config.ServiceConfigConstants;
 
 @Service
 @RequiredArgsConstructor
 public class UserMatchingService {
 
     private final UserRepository userRepository;
-
-    public UserResponseDto getUserExcept(Long currentUserId) {
-        User user = userRepository.findRandomUserExcept(currentUserId);
-        if (user == null){
-            throw new NotFoundException(
-                    ExceptionMessages.NO_USER_FOUND,
-                    currentUserId.toString()
-            );
+    private static final Random RANDOM = new Random();
+    public List<UserResponseDto> getUsersExcept(Long currentUserId) {
+        long total = userRepository.countByIdNot(currentUserId);
+        if (total==0l){
+            return List.of();
         }
-        return UserResponseDto.from(user);
+        int maxOffset = (int) Math.max(total - ServiceConfigConstants.MATCHING_USERS_MAX_NUMBER, 0);
+        int randomOffset = RANDOM.nextInt(maxOffset + 1);
+        PageRequest pageRequest = PageRequest.of(randomOffset, ServiceConfigConstants.MATCHING_USERS_MAX_NUMBER);
+        List<User> users = userRepository.findAllExcept(currentUserId, pageRequest);
+        if (users==null){
+            return List.of();
+        }
+        return users.stream().map(UserResponseDto::from).toList();
     }
 }

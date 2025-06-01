@@ -2,8 +2,6 @@ package flab.transtalk.user.service.user;
 
 
 import flab.transtalk.common.enums.LanguageSelection;
-import flab.transtalk.common.exception.NotFoundException;
-import flab.transtalk.common.exception.message.ExceptionMessages;
 import flab.transtalk.user.domain.Profile;
 import flab.transtalk.user.domain.User;
 import flab.transtalk.user.dto.res.UserResponseDto;
@@ -15,10 +13,14 @@ import org.mockito.InjectMocks;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("사용자 매칭 테스트")
@@ -45,26 +47,13 @@ public class UserMatchingServiceTest {
                         .selfIntroduction("")
                         .build())
                 .build();
-        BDDMockito.given(userRepository.findRandomUserExcept(currentUserId)).willReturn(user);
+        BDDMockito.given(userRepository.findAllExcept(eq(currentUserId), any(Pageable.class))).willReturn(List.of(user));
 
         // when
-        UserResponseDto result = userMatchingService.getUserExcept(currentUserId);
+        List<UserResponseDto> result = userMatchingService.getUsersExcept(currentUserId);
 
         // then
-        assertThat(result.getId()).isEqualTo(2L);
-        assertThat(result.getName()).isEqualTo("사용자2");
-    }
-
-    @Test
-    @DisplayName("매칭 사용자 없음 예외 발생 테스트")
-    void  testGetUserExcept_2(){
-        // given
-        Long currentUserId = 1L;
-        BDDMockito.given(userRepository.findRandomUserExcept(currentUserId)).willReturn(null);
-
-        // when & then
-        assertThatThrownBy(()->userMatchingService.getUserExcept(currentUserId))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining(ExceptionMessages.NO_USER_FOUND);
+        assertThat(result.get(0).getId()).isEqualTo(2L);
+        assertThat(result.get(0).getName()).isEqualTo("사용자2");
     }
 }

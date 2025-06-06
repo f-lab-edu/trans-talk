@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.Map;
 import flab.transtalk.auth.domain.AuthAccount;
 import flab.transtalk.auth.domain.ProviderInfo;
+import flab.transtalk.auth.exception.OAuth2CustomAuthenticationException;
+import flab.transtalk.auth.exception.OAuth2ErrorCode;
 import flab.transtalk.auth.repository.AuthAccountRepository;
 import flab.transtalk.user.domain.User;
 import flab.transtalk.user.dto.req.ProfileCreateRequestDto;
@@ -52,6 +54,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
                     Long userId = userService.signUp(reqUserDto, reqProfileDto);
                     User user = userRepository.findById(userId).orElseThrow(() -> {
+                        throw new OAuth2CustomAuthenticationException(OAuth2ErrorCode.USER_NOT_REGISTERED, null);
                     });
 
                     return authAccountRepository.save(AuthAccount.builder()

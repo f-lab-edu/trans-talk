@@ -1,11 +1,9 @@
 package flab.transtalk.auth.domain;
 
-import flab.transtalk.auth.exception.message.JwtExceptionMessages;
-import flab.transtalk.user.domain.User;
-import lombok.Builder;
+import flab.transtalk.auth.exception.OAuth2CustomAuthenticationException;
+import flab.transtalk.auth.exception.OAuth2ErrorCode;
 import lombok.Getter;
 import lombok.Value;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @Value
@@ -21,7 +19,7 @@ public class ProviderInfo {
         String providerId;
         switch (provider) {
             case GOOGLE -> providerId = oAuth2User.getAttribute("sub");
-            default -> throw new OAuth2AuthenticationException(JwtExceptionMessages.AUTH_FAILED);
+            default -> throw new OAuth2CustomAuthenticationException(OAuth2ErrorCode.PROVIDER_INFO_EXTRACTION_FAILED, null);
         }
 
         return new ProviderInfo(provider, providerId);
@@ -32,7 +30,7 @@ public class ProviderInfo {
             case GOOGLE -> {
                 return "sub";
             }
-            default -> throw new OAuth2AuthenticationException(JwtExceptionMessages.AUTH_FAILED);
+            default -> throw new OAuth2CustomAuthenticationException(OAuth2ErrorCode.PROVIDER_INFO_EXTRACTION_FAILED, null);
         }
     }
 }

@@ -4,6 +4,7 @@ import flab.transtalk.common.enums.LanguageSelection;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,12 @@ public class Profile {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column(name = "name", length = 50)
+    private String name;
+
+    @Column(name = "birth_date", columnDefinition = "DATE")
+    private LocalDate birthDate;
+
     @Column(name = "self_introduction", length = 300)
     private String selfIntroduction;
 
@@ -36,6 +43,12 @@ public class Profile {
     @Builder.Default
     private List<Post> posts = new ArrayList<>();
 
+    public void setName(String name){
+        this.name = name;
+    }
+    public void setBirthDate(LocalDate birthDate){
+        this.birthDate = birthDate;
+    }
     public void setSelfIntroduction(String selfIntroduction){
         this.selfIntroduction = selfIntroduction;
     }

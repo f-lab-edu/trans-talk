@@ -16,12 +16,10 @@ import java.io.Serializable;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserSummaryDto {
     Long id;
-    String name;
 
     public static UserSummaryDto from(User user){
         return UserSummaryDto.builder()
                 .id(user.getId())
-                .name(user.getName())
                 .build();
     }
 }

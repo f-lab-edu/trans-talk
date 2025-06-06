@@ -6,9 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
-import java.io.Serializable;
-import java.time.LocalDate;
-
 /**
  * DTO for {@link flab.transtalk.user.domain.User}
  */
@@ -17,19 +14,19 @@ import java.time.LocalDate;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserResponseDto {
     Long id;
-    String name;
-    LocalDate birthDate;
+    String email;
     ProfileResponseDto profile;
 
     public static UserResponseDto from(User user) {
         return UserResponseDto.builder()
                 .id(user.getId())
-                .name(user.getName())
-                .birthDate(user.getBirthDate())
+                .email(user.getEmail())
                 .profile(
                         (user!=null?
                                 ProfileResponseDto.builder()
                                     .id(user.getProfile().getId())
+                                    .name(user.getProfile().getName())
+                                    .birthDate(user.getProfile().getBirthDate())
                                     .selfIntroduction(user.getProfile().getSelfIntroduction())
                                     .language(user.getProfile().getLanguage())
                                     .build() :

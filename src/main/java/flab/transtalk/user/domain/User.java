@@ -1,10 +1,8 @@
 package flab.transtalk.user.domain;
 
 import flab.transtalk.auth.domain.AuthAccount;
-import flab.transtalk.auth.domain.AuthProvider;
 import flab.transtalk.translation.domain.ChatRoomUser;
 import jakarta.persistence.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -31,14 +29,8 @@ public class User {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "name", length = 50)
-    private String name;
-
     @Column(name = "email")
     private String email;
-
-    @Column(name = "birth_date", columnDefinition = "DATE")
-    private LocalDate birthDate;
 
     @Column(name = "external_id", unique = true, nullable = false, length = 36)
     private String externalId;
@@ -53,10 +45,8 @@ public class User {
     private AuthAccount authAccount;
 
     @Builder
-    private User(String name, String email, LocalDate birthDate) {
-        this.name       = name;
+    private User(String email) {
         this.email      = email;
-        this.birthDate  = birthDate;
         // externalId 는 null -> @PrePersist에서 자동 생성
         // 외부에서 주입되지 않도록 방지
     }

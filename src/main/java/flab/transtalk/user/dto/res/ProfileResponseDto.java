@@ -7,10 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
-import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * DTO for {@link Profile}
@@ -20,6 +19,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProfileResponseDto {
     Long id;
+    String name;
+    LocalDate birthDate;
     String selfIntroduction;
     LanguageSelection language;
     @Builder.Default
@@ -28,6 +29,8 @@ public class ProfileResponseDto {
     public static ProfileResponseDto from(Profile entity){
         return ProfileResponseDto.builder()
                 .id(entity.getId())
+                .name(entity.getName())
+                .birthDate(entity.getBirthDate())
                 .selfIntroduction(entity.getSelfIntroduction())
                 .language(entity.getLanguage())
                 .build();

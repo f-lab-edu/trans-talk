@@ -1,10 +1,8 @@
 package flab.transtalk.user.controller;
 
-import flab.transtalk.user.dto.req.UserCreateRequestDto;
 import flab.transtalk.user.dto.res.UserListResponseDto;
 import flab.transtalk.user.dto.res.UserResponseDto;
 import flab.transtalk.user.service.user.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +14,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-
-    @PostMapping
-    public ResponseEntity<UserResponseDto> createUser(@RequestBody @Valid UserCreateRequestDto dto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.signUp(dto));
-    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponseDto> getUser(@PathVariable Long userId){

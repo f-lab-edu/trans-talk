@@ -29,6 +29,12 @@ public class ProfileService {
                         profileId.toString()
                 ));
 
+        if (dto.getName() != null){
+            profile.setName(dto.getName());
+        }
+        if (dto.getBirthDate() != null){
+            profile.setBirthDate(dto.getBirthDate());
+        }
         if (dto.getSelfIntroduction() != null){
             profile.setSelfIntroduction(dto.getSelfIntroduction());
         }

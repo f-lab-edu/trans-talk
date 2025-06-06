@@ -1,12 +1,15 @@
 package flab.transtalk.auth.service;
+
 import java.util.Collections;
 import java.util.Map;
-
 import flab.transtalk.auth.domain.AuthAccount;
 import flab.transtalk.auth.domain.ProviderInfo;
 import flab.transtalk.auth.repository.AuthAccountRepository;
 import flab.transtalk.user.domain.User;
+import flab.transtalk.user.dto.req.ProfileCreateRequestDto;
+import flab.transtalk.user.dto.req.UserCreateRequestDto;
 import flab.transtalk.user.repository.UserRepository;
+import flab.transtalk.user.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -20,8 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-    private final UserRepository userRepository;
     private final AuthAccountRepository authAccountRepository;
+    private final UserService userService;
+    private final UserRepository userRepository;
 
     private static final String DEFAULT_ROLE = "ROLE_USER";
 
@@ -32,25 +36,32 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
         ProviderInfo providerInfo = ProviderInfo.fromOAuth2User(registrationId, oAuth2User);
-        String nameAttributeKey = providerInfo.getNameAttributeKey();
-        String email = (String) oAuth2User.getAttribute("email");
-        String name = (String) oAuth2User.getAttribute("name");
 
         authAccountRepository
                 .findByProviderAndProviderId(providerInfo.getProvider(), providerInfo.getProviderId())
                 .orElseGet(() -> {
-                    User user = userRepository.save(User.builder()
-                            .name(name)
+                    String email = (String) oAuth2User.getAttribute("email");
+                    String name = (String) oAuth2User.getAttribute("name");
+
+                    UserCreateRequestDto reqUserDto = UserCreateRequestDto.builder()
                             .email(email)
-                            .birthDate(null)
-                            .build());
+                            .build();
+                    ProfileCreateRequestDto reqProfileDto = ProfileCreateRequestDto.builder()
+                            .name(name)
+                            .build();
+
+                    Long userId = userService.signUp(reqUserDto, reqProfileDto);
+                    User user = userRepository.findById(userId).orElseThrow(() -> {
+                    });
+
                     return authAccountRepository.save(AuthAccount.builder()
                             .provider(providerInfo.getProvider())
                             .providerId(providerInfo.getProviderId())
-                            .user(user)                                    // Δ
+                            .user(user)
                             .build());
                 });
 
+        String nameAttributeKey = providerInfo.getNameAttributeKey();
         Map<String, Object> exposed = Map.of(
                 nameAttributeKey, providerInfo.getProviderId()
         );

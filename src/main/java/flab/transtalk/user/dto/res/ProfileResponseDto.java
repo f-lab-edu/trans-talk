@@ -23,6 +23,8 @@ public class ProfileResponseDto {
     LocalDate birthDate;
     String selfIntroduction;
     LanguageSelection language;
+    String imageKey;
+    String imageUrl;
     @Builder.Default
     List<PostResponseDto> posts = new ArrayList<>();
 

@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Value
 @Builder
 public class PostCreateRequestDto {
-    private String briefContext;
-    private MultipartFile imageFile;
-    private Long profileId;
+    String briefContext;
+    MultipartFile imageFile;
+    Long profileId;
 }

@@ -1,4 +1,4 @@
-package flab.transtalk.user.service.post;
+package flab.transtalk.user.service.image;
 
 import flab.transtalk.common.exception.BadRequestException;
 import flab.transtalk.common.exception.NotFoundException;
@@ -24,7 +24,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class ImageService {
+public class S3Service {
     // AwsConfig에서 등록한 Bean 사용
     private final S3Client s3Client;
     private final S3Presigner presigner;

@@ -22,7 +22,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostDtoMapper postDtoMapper;
     private final ProfileRepository profileRepository;
-    private final S3Service imageService;
+    private final S3Service s3Service;
 
     public PostResponseDto createPost(PostCreateRequestDto dto) {
         Profile profile = profileRepository.findById(dto.getProfileId())
@@ -32,7 +32,7 @@ public class PostService {
                 ));
         String generatedImageKey;
         try {
-            generatedImageKey = imageService.uploadPostImageFile(dto.getImageFile(), profile.getId());
+            generatedImageKey = s3Service.uploadPostImageFile(dto.getImageFile(), profile.getId());
         } catch (IOException e) {
             throw new BadRequestException(ExceptionMessages.IMAGE_UPLOAD_FAILED);
         }
@@ -62,7 +62,7 @@ public class PostService {
                         postId.toString()
                 )
         );
-        imageService.deleteImageFile(post.getImageKey());
+        s3Service.deleteImageFile(post.getImageKey());
         postRepository.delete(post);
     }
 }

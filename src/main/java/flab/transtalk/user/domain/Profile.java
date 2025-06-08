@@ -58,6 +58,9 @@ public class Profile {
     public void setLanguage(LanguageSelection language){
         this.language = language;
     }
+    public void setImageKey(String imageKey) {
+        this.imageKey = imageKey;
+    }
 
     public void setUser(User user) {
         if (this.user != null && this.user != user){

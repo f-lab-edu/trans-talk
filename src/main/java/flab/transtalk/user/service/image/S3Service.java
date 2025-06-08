@@ -21,19 +21,41 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class S3Service {
+    private static final Tika tika = new Tika();
     private final S3Client s3Client;
-
     @Value("${app.aws.s3.bucket}")
     private String bucket;
+    @Value("${app.aws.s3.profiles-resource-path}")
+    private String profileResourcePath;
     @Value("${app.aws.s3.post-resource-path}")
     private String postResourcePath;
-
-    private static final Tika tika = new Tika();
 
     public static final Map<String, String> SUPPORTED_IMAGE_TYPES = Map.of(
             "image/jpeg", ".jpg",
             "image/png", ".png"
     );
+
+    public String uploadProfileImageFile(MultipartFile file, Long userId) throws IOException {
+        String detectedContentType = tika.detect(file.getInputStream());
+        String extension = SUPPORTED_IMAGE_TYPES.get(detectedContentType);
+        if (extension == null){
+            throw new BadRequestException(
+                    String.format(ExceptionMessages.UNSUPPORTED_IMAGE_FORMAT, detectedContentType)
+            );
+        }
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
+        String generatedImageKey = generateImageKey(profileResourcePath, userId, timestamp, extension);
+
+        PutObjectRequest req = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(generatedImageKey)
+                .contentType(detectedContentType)
+                .acl(ObjectCannedACL.PRIVATE)
+                .build();
+
+        s3Client.putObject(req, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+        return generatedImageKey;
+    }
 
     public String uploadPostImageFile(MultipartFile file, Long profileId) throws IOException {
         String detectedContentType = tika.detect(file.getInputStream());
@@ -56,6 +78,7 @@ public class S3Service {
         s3Client.putObject(req, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
         return generatedImageKey;
     }
+
     public void deleteImageFile(String imageKey) {
         try {
             s3Client.deleteObject(DeleteObjectRequest.builder()

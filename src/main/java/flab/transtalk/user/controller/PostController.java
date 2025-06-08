@@ -39,12 +39,17 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponseDto> get(@PathVariable Long postId){
+    public ResponseEntity<PostResponseDto> get(
+            HttpServletResponse response,
+            @PathVariable Long postId
+    ) throws JOSEException {
+        cloudFrontService.issueSignedCookie(response);
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPost(postId));
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long postId){
+    public ResponseEntity<Void> deletePost(
+            @PathVariable Long postId){
         postService.deletePost(postId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

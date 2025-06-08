@@ -3,18 +3,18 @@ package flab.transtalk.user.service.post;
 import flab.transtalk.common.exception.BadRequestException;
 import flab.transtalk.common.exception.NotFoundException;
 import flab.transtalk.common.exception.message.ExceptionMessages;
-import flab.transtalk.config.ServiceConfigConstants;
 import flab.transtalk.user.domain.Post;
 import flab.transtalk.user.domain.Profile;
 import flab.transtalk.user.dto.req.PostCreateRequestDto;
 import flab.transtalk.user.dto.res.PostResponseDto;
 import flab.transtalk.user.repository.PostRepository;
 import flab.transtalk.user.repository.ProfileRepository;
+import flab.transtalk.user.service.image.CloudFrontService;
+import flab.transtalk.user.service.image.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +25,8 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final ProfileRepository profileRepository;
-    private final ImageService imageService;
+    private final S3Service imageService;
+    private final CloudFrontService cloudFrontService;
 
     // Post 생성 (+ 이미지 업로드)
     public PostResponseDto createPost(PostCreateRequestDto dto) {
@@ -36,7 +37,7 @@ public class PostService {
                 ));
         String generatedImageKey;
         try {
-            generatedImageKey = imageService.uploadImageFile(dto.getImageFile());
+            generatedImageKey = imageService.uploadPostImageFile(dto.getImageFile(), profile.getId());
         } catch (IOException e) {
             throw new BadRequestException(ExceptionMessages.IMAGE_UPLOAD_FAILED);
         }
@@ -47,14 +48,11 @@ public class PostService {
         post.setProfile(profile);
 
         Post saved = postRepository.save(post);
-        String presignedUrl = imageService.generatePresignedUrl(
-                generatedImageKey,
-                Duration.ofHours(ServiceConfigConstants.PRESIGNED_URL_DURATION_HOUR)
-        );
+        String imageUrl = cloudFrontService.getImageUrl(generatedImageKey);
         return PostResponseDto.builder()
                 .id(saved.getId())
                 .briefContext(saved.getBriefContext())
-                .imagePresignedUrl(presignedUrl)      // presignedURL 반환
+                .imageUrl(imageUrl)
                 .build();
     }
 
@@ -65,14 +63,10 @@ public class PostService {
                         ExceptionMessages.POST_NOT_FOUND,
                         postId.toString()
                 ));
-        String presignedUrl = imageService.generatePresignedUrl(
-                post.getImageKey(),
-                Duration.ofHours(ServiceConfigConstants.PRESIGNED_URL_DURATION_HOUR)
-        );
         return PostResponseDto.builder()
                 .id(post.getId())
                 .briefContext(post.getBriefContext())
-                .imagePresignedUrl(presignedUrl)
+                .imageUrl(cloudFrontService.getImageUrl(post.getImageKey()))
                 .build();
     }
 
@@ -96,12 +90,7 @@ public class PostService {
                 .map(post -> PostResponseDto.builder()
                         .id(post.getId())
                         .briefContext(post.getBriefContext())
-                        .imagePresignedUrl(
-                                imageService.generatePresignedUrl(
-                                        post.getImageKey(),
-                                        Duration.ofHours(ServiceConfigConstants.PRESIGNED_URL_DURATION_HOUR)
-                                )
-                        )
+                        .imageUrl(cloudFrontService.getImageUrl(post.getImageKey()))
                         .build())
                 .collect(Collectors.toList());
     }

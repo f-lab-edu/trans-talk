@@ -23,6 +23,8 @@ public class ProfileCreateRequestDto {
 
     public Profile toEntity(){
         return Profile.builder()
+                .name(this.name)
+                .birthDate(this.birthDate)
                 .selfIntroduction(this.selfIntroduction)
                 .language(this.language)
                 .build();

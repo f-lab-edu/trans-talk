@@ -42,7 +42,6 @@ public class ImageService {
     // image key 생성 및 이미지 업로드
     public String uploadImageFile(MultipartFile file) throws IOException {
         String detectedContentType = tika.detect(file.getInputStream());
-        // image key 구성: post image folder 이름 + UUID + LocalDate + 확장자
         String extension = SUPPORTED_IMAGE_TYPES.get(detectedContentType);
         if (extension == null){
             throw new BadRequestException(
@@ -50,6 +49,7 @@ public class ImageService {
             );
         }
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
+        // image key 구성: post image folder 이름 + UUID + LocalDate + 확장자
         String generatedImageKey = ServiceConfigConstants.S3_POST_IMAGE_FOLDER_NAME + UUID.randomUUID() + "-" + timestamp + extension;
 
         PutObjectRequest req = PutObjectRequest.builder()

@@ -27,14 +27,4 @@ public class ProfileResponseDto {
     String imageUrl;
     @Builder.Default
     List<PostResponseDto> posts = new ArrayList<>();
-
-    public static ProfileResponseDto from(Profile entity){
-        return ProfileResponseDto.builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .birthDate(entity.getBirthDate())
-                .selfIntroduction(entity.getSelfIntroduction())
-                .language(entity.getLanguage())
-                .build();
-    }
 }

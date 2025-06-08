@@ -57,6 +57,7 @@ public class CloudFrontService {
                 "CloudFront-Key-Pair-Id", cloudFrontConfig.getKeyPairId()
         );
     }
+
     public void attachSignedCookies(HttpServletResponse response, Map<String, String> cookies, long ttlSeconds) {
         cookies.forEach((key, value) -> {
             ResponseCookie cookie = ResponseCookie.from(key, value)
@@ -69,12 +70,17 @@ public class CloudFrontService {
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         });
     }
+
     public void issueSignedCookie(HttpServletResponse response) throws JOSEException {
         Duration ttl = Duration.ofHours(ServiceConfigConstants.SIGNED_COOKIE_DURATION_HOUR);
         Map<String, String> cookies = generateSignedCookies(ttl);
         attachSignedCookies(response, cookies, ttl.toSeconds());
     }
+
     public String getImageUrl(String imageKey){
+        if (imageKey==null){
+            return null;
+        }
         return String.format("https://%s/%s",cloudFrontConfig.getDomain(), imageKey);
     }
 }

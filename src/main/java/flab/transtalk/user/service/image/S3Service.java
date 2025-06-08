@@ -18,8 +18,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.UUID;
 
@@ -97,7 +95,7 @@ public class S3Service {
                     String.format(ExceptionMessages.UNSUPPORTED_IMAGE_FORMAT, detectedContentType)
             );
         }
-        String generatedImageKey = generateImageKey(file, profileResourcePath, userId, extension);
+        String generatedImageKey = generateImageKey(profileResourcePath, userId, extension);
 
         String largeImageKey = getImageKeyWithSuffix(generatedImageKey, LARGE_SUFFIX);
         uploadImageFile(file, largeImageKey, detectedContentType);
@@ -117,7 +115,7 @@ public class S3Service {
                     String.format(ExceptionMessages.UNSUPPORTED_IMAGE_FORMAT, detectedContentType)
             );
         }
-        String generatedImageKey = generateImageKey(file, postResourcePath, profileId, extension);
+        String generatedImageKey = generateImageKey(postResourcePath, profileId, extension);
         BufferedImage croppedImage = cropToSquare(file);
 
         String largeImageKey = getImageKeyWithSuffix(generatedImageKey, LARGE_SUFFIX);
@@ -154,7 +152,7 @@ public class S3Service {
         }
     }
 
-    public String generateImageKey(MultipartFile file, String resourcePath, Long id, String extension) throws IOException {
+    public String generateImageKey(String resourcePath, Long id, String extension){
         return resourcePath + "/" + id.toString() + "/" + UUID.randomUUID() + extension;
     }
     public String getImageKeyWithSuffix(String imageKey, String suffix){

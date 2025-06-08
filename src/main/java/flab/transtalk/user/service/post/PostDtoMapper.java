@@ -16,7 +16,8 @@ public class PostDtoMapper {
                 .id(post.getId())
                 .briefContext(post.getBriefContext())
                 .imageKey(post.getImageKey())
-                .imageUrl(cloudFrontService.getImageUrl(post.getImageKey()))
+                .largeImageUrl(cloudFrontService.getLargeImageUrl(post.getImageKey()))
+                .smallImageUrl(cloudFrontService.getSmallImageUrl(post.getImageKey()))
                 .build();
     }
 }

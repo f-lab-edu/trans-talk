@@ -12,5 +12,6 @@ public class PostResponseDto {
     Long id;
     String briefContext;
     String imageKey;
-    String imageUrl;
+    String largeImageUrl;
+    String smallImageUrl;
 }

@@ -6,6 +6,7 @@ import flab.transtalk.config.CloudFrontConfig;
 import flab.transtalk.config.ServiceConfigConstants;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,11 @@ import java.util.Map;
 public class CloudFrontService {
     private final RSAPrivateKey privateKey;
     private final CloudFrontConfig cloudFrontConfig;
+    private final S3Service s3Service;
+    @Value("${app.aws.s3.suffix.large}")
+    private String LARGE_SUFFIX;
+    @Value("${app.aws.s3.suffix.small}")
+    private String SMALL_SUFFIX;
 
     public Map<String, String> generateSignedCookies(Duration duration) throws JOSEException {
         long expires = System.currentTimeMillis() + duration.toMillis();
@@ -77,10 +83,18 @@ public class CloudFrontService {
         attachSignedCookies(response, cookies, ttl.toSeconds());
     }
 
-    public String getImageUrl(String imageKey){
+    public String getLargeImageUrl(String imageKey){
+        return getImageUrl(imageKey, LARGE_SUFFIX);
+    }
+
+    public String getSmallImageUrl(String imageKey){
+        return getImageUrl(imageKey, SMALL_SUFFIX);
+    }
+
+    public String getImageUrl(String imageKey, String suffix){
         if (imageKey==null){
             return null;
         }
-        return String.format("https://%s/%s",cloudFrontConfig.getDomain(), imageKey);
+        return String.format("https://%s/%s",cloudFrontConfig.getDomain(), s3Service.getImageKeyWithSuffix(imageKey, suffix));
     }
 }

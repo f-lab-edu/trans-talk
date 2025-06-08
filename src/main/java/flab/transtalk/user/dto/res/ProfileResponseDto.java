@@ -24,7 +24,8 @@ public class ProfileResponseDto {
     String selfIntroduction;
     LanguageSelection language;
     String imageKey;
-    String imageUrl;
+    String largeImageUrl;
+    String smallImageUrl;
     @Builder.Default
     List<PostResponseDto> posts = new ArrayList<>();
 }

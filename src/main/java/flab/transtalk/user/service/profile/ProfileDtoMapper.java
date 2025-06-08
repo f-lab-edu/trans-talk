@@ -24,7 +24,8 @@ public class ProfileDtoMapper {
                 .selfIntroduction(profile.getSelfIntroduction())
                 .language(profile.getLanguage())
                 .imageKey(profile.getImageKey())
-                .imageUrl(cloudFrontService.getImageUrl(profile.getImageKey()))
+                .largeImageUrl(cloudFrontService.getLargeImageUrl(profile.getImageKey()))
+                .smallImageUrl(cloudFrontService.getSmallImageUrl(profile.getImageKey()))
                 .posts(profile.getPosts()!=null?
                         profile.getPosts().stream().map((Post post)->
                                 postDtoMapper.toDto(post)

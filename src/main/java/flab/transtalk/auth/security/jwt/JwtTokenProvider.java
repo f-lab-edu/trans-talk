@@ -64,4 +64,13 @@ public class JwtTokenProvider {
             throw new JwtAuthenticationException(JwtErrorCode.INVALID_SIGNATURE, e);
         }
     }
+
+    public boolean validateToken(String token) {
+        try {
+            parseClaims(token);
+            return true;
+        } catch (JwtAuthenticationException e) {
+            return false;
+        }
+    }
 }

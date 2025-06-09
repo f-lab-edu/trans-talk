@@ -29,6 +29,10 @@ public class ChatRoom {
     @Builder.Default
     private List<ChatRoomUser> chatRoomUsers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<ChatMessage> chatMessages = new ArrayList<>();
+
     public void addUser(User user) {
         ChatRoomUser chatRoomUser = ChatRoomUser.builder()
                 .chatRoom(this)

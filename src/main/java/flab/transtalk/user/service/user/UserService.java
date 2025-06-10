@@ -25,8 +25,8 @@ public class UserService {
         return userSignUpService.signUp(reqUserDto, reqProfileDto);
     }
 
-    public List<UserResponseDto> getUsersExcept(Long currentUserId) {
-        return userMatchingService.getUsersExcept(currentUserId);
+    public List<UserResponseDto> getMatchResult(Long currentUserId) {
+        return userMatchingService.getMatchResult(currentUserId);
     }
 
     public UserResponseDto getUser(Long userId) {

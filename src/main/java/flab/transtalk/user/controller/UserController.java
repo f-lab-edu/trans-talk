@@ -25,7 +25,7 @@ public class UserController {
     public ResponseEntity<UserListResponseDto> getMatchingUsers(@PathVariable Long currentUserId){
         return ResponseEntity.status(HttpStatus.OK).body(
                 UserListResponseDto.builder()
-                        .users(userService.getUsersExcept(currentUserId))
+                        .users(userService.getMatchResult(currentUserId))
                         .build()
         );
     }

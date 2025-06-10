@@ -50,7 +50,7 @@ public class UserMatchingServiceTest {
         BDDMockito.given(userRepository.findAllExcept(eq(currentUserId), any(Pageable.class))).willReturn(List.of(user));
 
         // when
-        List<UserResponseDto> result = userMatchingService.getUsersExcept(currentUserId);
+        List<UserResponseDto> result = userMatchingService.getMatchResult(currentUserId);
 
         // then
         assertThat(result.get(0).getId()).isEqualTo(2L);

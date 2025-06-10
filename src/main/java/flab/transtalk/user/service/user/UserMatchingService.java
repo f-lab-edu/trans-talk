@@ -5,7 +5,6 @@ import flab.transtalk.common.exception.NotFoundException;
 import flab.transtalk.common.exception.message.ExceptionMessages;
 import flab.transtalk.user.domain.User;
 import flab.transtalk.user.domain.UserMatchStatus;
-import flab.transtalk.user.dto.res.UserMatchStatusResponseDto;
 import flab.transtalk.user.dto.res.UserResponseDto;
 import flab.transtalk.user.repository.UserMatchStatusRepository;
 import flab.transtalk.user.repository.UserRepository;

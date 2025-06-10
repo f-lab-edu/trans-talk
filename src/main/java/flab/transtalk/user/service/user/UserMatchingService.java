@@ -5,6 +5,7 @@ import flab.transtalk.common.exception.NotFoundException;
 import flab.transtalk.common.exception.message.ExceptionMessages;
 import flab.transtalk.user.domain.User;
 import flab.transtalk.user.domain.UserMatchStatus;
+import flab.transtalk.user.dto.res.UserMatchStatusResponseDto;
 import flab.transtalk.user.dto.res.UserResponseDto;
 import flab.transtalk.user.repository.UserMatchStatusRepository;
 import flab.transtalk.user.repository.UserRepository;
@@ -107,5 +108,17 @@ public class UserMatchingService {
         if (current == ServiceConfigConstants.MAX_REMAINING_MATCH_REQUESTS) {
             status.setLastMatchRequestedAt(LocalDateTime.now());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public UserMatchStatusResponseDto getMatchStatus(Long userId) {
+        rechargeMatchRequestIfIntervalPassed(userId);
+
+        UserMatchStatus status = statusRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException(
+                        ExceptionMessages.USER_MATCH_STATUS_NOT_FOUND,
+                        "(userId) "+userId
+                ));
+        return UserMatchStatusResponseDto.builder().remainingMatchRequests(status.getRemainingMatchRequests()).build();
     }
 }

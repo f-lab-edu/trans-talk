@@ -5,6 +5,7 @@ import flab.transtalk.common.exception.message.ExceptionMessages;
 import flab.transtalk.user.domain.User;
 import flab.transtalk.user.dto.req.ProfileCreateRequestDto;
 import flab.transtalk.user.dto.req.UserCreateRequestDto;
+import flab.transtalk.user.dto.res.UserMatchStatusResponseDto;
 import flab.transtalk.user.dto.res.UserResponseDto;
 import flab.transtalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +39,9 @@ public class UserService {
             );
         }
         return UserResponseDto.from(user.get());
+    }
+
+    public UserMatchStatusResponseDto getMatchStatus(Long userId){
+        return userMatchingService.getMatchStatus(userId);
     }
 }

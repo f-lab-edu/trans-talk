@@ -100,15 +100,4 @@ public class UserMatchingService {
             status.setLastMatchRequestedAt(LocalDateTime.now());
         }
     }
-
-    public UserMatchStatusResponseDto getMatchStatus(Long userId) {
-        rechargeMatchRequestIfIntervalPassed(userId);
-
-        UserMatchStatus status = statusRepository.findByUserId(userId)
-                .orElseThrow(() -> new NotFoundException(
-                        ExceptionMessages.USER_MATCH_STATUS_NOT_FOUND,
-                        "(userId) "+userId
-                ));
-        return UserMatchStatusResponseDto.builder().remainingMatchRequests(status.getRemainingMatchRequests()).build();
-    }
 }

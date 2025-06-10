@@ -29,15 +29,6 @@ public class UserMatchingService {
     private final UserMatchStatusRepository statusRepository;
     private static final Random RANDOM = new Random();
 
-    @Transactional
-    public List<UserResponseDto> getMatchResult(Long userId) {
-        rechargeMatchRequestIfIntervalPassed(userId);
-        consumeMatchRequest(userId);
-
-        return getUsersExcept(userId);
-    }
-
-    @Transactional(readOnly = true)
     public List<UserResponseDto> getUsersExcept(Long currentUserId){
         long total = userRepository.countByIdNot(currentUserId);
         if (total==0l){
@@ -110,7 +101,6 @@ public class UserMatchingService {
         }
     }
 
-    @Transactional(readOnly = true)
     public UserMatchStatusResponseDto getMatchStatus(Long userId) {
         rechargeMatchRequestIfIntervalPassed(userId);
 

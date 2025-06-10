@@ -10,6 +10,7 @@ import flab.transtalk.user.dto.res.UserResponseDto;
 import flab.transtalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +28,8 @@ public class UserService {
     }
 
     public List<UserResponseDto> getMatchResult(Long currentUserId) {
-        return userMatchingService.getMatchResult(currentUserId);
+        userMatchingService.consumeMatchRequest(currentUserId);
+        return userMatchingService.getUsersExcept(currentUserId);
     }
 
     public UserResponseDto getUser(Long userId) {

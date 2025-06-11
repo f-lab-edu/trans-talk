@@ -30,7 +30,7 @@ public class UserMatchingService {
 
     public List<UserResponseDto> getUsersExcept(Long currentUserId){
         long total = userRepository.countByIdNot(currentUserId);
-        if (total==0l){
+        if (total==0L){
             return List.of();
         }
         int maxOffset = (int) Math.max(total - ServiceConfigConstants.MATCHING_USERS_MAX_NUMBER, 0);

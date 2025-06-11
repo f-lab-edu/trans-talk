@@ -54,26 +54,22 @@ public class UserMatchingService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime lastRequested = status.getLastMatchRequestedAt();
 
-        int hoursElapsed = (int) (
+        int refillCount = (int) (
                 Duration.between(lastRequested, now).toHours()
                 / ServiceConfigConstants.MATCH_REQUEST_RECHARGE_INTERVAL_HOURS
         );
-        if (hoursElapsed <= 0) return;
+        if (refillCount <= 0) return;
 
         int current = status.getRemainingMatchRequests();
         int max = ServiceConfigConstants.MAX_REMAINING_MATCH_REQUESTS;
 
-        int refill = Math.min(hoursElapsed, max - current);
+        int refill = Math.min(refillCount, max - current);
         if (refill <= 0) return;
 
         int updatedCount = current + refill;
         status.setRemainingMatchRequests(updatedCount);
 
-        if (updatedCount >= max) {
-            status.setLastMatchRequestedAt(now);
-        } else {
-            status.setLastMatchRequestedAt(lastRequested.plusHours(refill));
-        }
+        status.setLastMatchRequestedAt(lastRequested.plusHours(refill * ServiceConfigConstants.MATCH_REQUEST_RECHARGE_INTERVAL_HOURS));
     }
 
     @Transactional

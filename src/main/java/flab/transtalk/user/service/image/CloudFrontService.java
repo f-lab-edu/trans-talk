@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.time.Duration;
@@ -91,10 +92,17 @@ public class CloudFrontService {
         return getImageUrl(imageKey, SMALL_SUFFIX);
     }
 
-    public String getImageUrl(String imageKey, String suffix){
-        if (imageKey==null){
+    public String getImageUrl(String imageKey, String suffix) {
+        if (imageKey == null) {
             return null;
         }
-        return String.format("https://%s/%s",cloudFrontConfig.getDomain(), s3ImageService.getImageKeyWithSuffix(imageKey, suffix));
+
+        String fullKey = s3ImageService.getImageKeyWithSuffix(imageKey, suffix);
+        return UriComponentsBuilder.newInstance()
+                .scheme("https")
+                .host(cloudFrontConfig.getDomain())
+                .path(fullKey.startsWith("/") ? fullKey : "/" + fullKey)
+                .build()
+                .toUriString();
     }
 }

@@ -21,7 +21,7 @@ import java.util.Map;
 public class CloudFrontService {
     private final RSAPrivateKey privateKey;
     private final CloudFrontConfig cloudFrontConfig;
-    private final S3Service s3Service;
+    private final S3ImageService s3ImageService;
     @Value("${app.aws.s3.suffix.large}")
     private String LARGE_SUFFIX;
     @Value("${app.aws.s3.suffix.small}")
@@ -95,6 +95,6 @@ public class CloudFrontService {
         if (imageKey==null){
             return null;
         }
-        return String.format("https://%s/%s",cloudFrontConfig.getDomain(), s3Service.getImageKeyWithSuffix(imageKey, suffix));
+        return String.format("https://%s/%s",cloudFrontConfig.getDomain(), s3ImageService.getImageKeyWithSuffix(imageKey, suffix));
     }
 }

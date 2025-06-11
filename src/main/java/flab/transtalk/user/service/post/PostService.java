@@ -9,7 +9,7 @@ import flab.transtalk.user.dto.req.PostCreateRequestDto;
 import flab.transtalk.user.dto.res.PostResponseDto;
 import flab.transtalk.user.repository.PostRepository;
 import flab.transtalk.user.repository.ProfileRepository;
-import flab.transtalk.user.service.image.S3Service;
+import flab.transtalk.user.service.image.S3ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostDtoMapper postDtoMapper;
     private final ProfileRepository profileRepository;
-    private final S3Service s3Service;
+    private final S3ImageService s3ImageService;
 
     public PostResponseDto createPost(PostCreateRequestDto dto) {
         Profile profile = profileRepository.findById(dto.getProfileId())
@@ -32,7 +32,7 @@ public class PostService {
                 ));
         String generatedImageKey;
         try {
-            generatedImageKey = s3Service.uploadPostImageFile(dto.getImageFile(), profile.getId());
+            generatedImageKey = s3ImageService.uploadPostImageFile(dto.getImageFile(), profile.getId());
         } catch (IOException e) {
             throw new BadRequestException(ExceptionMessages.IMAGE_UPLOAD_FAILED);
         }
@@ -62,7 +62,7 @@ public class PostService {
                         postId.toString()
                 )
         );
-        s3Service.deleteImageFile(post.getImageKey());
+        s3ImageService.deleteImageFile(post.getImageKey());
         postRepository.delete(post);
     }
 }

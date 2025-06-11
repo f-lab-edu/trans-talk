@@ -7,7 +7,7 @@ import flab.transtalk.user.domain.Profile;
 import flab.transtalk.user.dto.req.ProfileUpdateRequestDto;
 import flab.transtalk.user.dto.res.ProfileResponseDto;
 import flab.transtalk.user.repository.ProfileRepository;
-import flab.transtalk.user.service.image.S3Service;
+import flab.transtalk.user.service.image.S3ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +22,7 @@ public class ProfileService {
 
     private final ProfileRepository profileRepository;
     private final ProfileDtoMapper profileDtoMapper;
-    private final S3Service s3Service;
+    private final S3ImageService s3ImageService;
 
     @Transactional
     public ProfileResponseDto updateProfile(Long profileId, ProfileUpdateRequestDto dto){
@@ -70,13 +70,13 @@ public class ProfileService {
         String prevImageKey = profile.getImageKey();
         String generatedImageKey;
         try {
-            generatedImageKey = s3Service.uploadProfileImageFile(imageFile, userId);
+            generatedImageKey = s3ImageService.uploadProfileImageFile(imageFile, userId);
         } catch (IOException e) {
             throw new BadRequestException(ExceptionMessages.IMAGE_UPLOAD_FAILED);
         }
         profile.setImageKey(generatedImageKey);
         if (prevImageKey!=null){
-            s3Service.deleteImageFile(prevImageKey);
+            s3ImageService.deleteImageFile(prevImageKey);
         }
 
         return profileDtoMapper.toDto(profile);

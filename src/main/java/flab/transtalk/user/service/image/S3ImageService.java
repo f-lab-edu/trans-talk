@@ -23,7 +23,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class S3Service {
+public class S3ImageService {
     private static final Tika tika = new Tika();
     private final S3Client s3Client;
     @Value("${app.aws.s3.bucket}")

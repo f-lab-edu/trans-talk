@@ -17,7 +17,8 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(
             name = "chat_room_seq_gen",
-            sequenceName = "chat_room_seq"
+            sequenceName = "chat_room_seq",
+            allocationSize = 50
     )
     @Column(name = "id", nullable = false)
     private Long id;

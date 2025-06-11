@@ -16,7 +16,8 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(
         name = "chat_record_seq_gen",
-        sequenceName = "chat_record_seq"
+        sequenceName = "chat_record_seq",
+        allocationSize = 500
     )
     private Long id;
 

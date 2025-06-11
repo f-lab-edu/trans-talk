@@ -25,8 +25,7 @@ public class UserMatchStatus {
     private User user;
 
     @Column(nullable = false)
-    @Builder.Default
-    private LocalDateTime lastMatchRequestedAt = LocalDateTime.now();
+    private LocalDateTime lastMatchRequestedAt;
 
     @Column(nullable = false)
     @Builder.Default

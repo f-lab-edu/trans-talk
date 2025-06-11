@@ -8,6 +8,7 @@ import flab.transtalk.translation.dto.req.ChatMessageRequestDto;
 import flab.transtalk.translation.dto.res.ChatMessageResponseDto;
 import flab.transtalk.translation.repository.ChatMessageRepository;
 import flab.transtalk.translation.repository.ChatRoomRepository;
+import flab.transtalk.translation.service.chatroom.ChatRoomService;
 import flab.transtalk.user.domain.User;
 import flab.transtalk.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -23,6 +24,7 @@ public class ChatMessageService {
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final ChatRoomService chatRoomService;
 
     @Transactional
     public ChatMessageResponseDto saveMessage(ChatMessageRequestDto request, Long senderId) {
@@ -38,8 +40,7 @@ public class ChatMessageService {
                         senderId.toString()
                 ));
 
-        boolean isParticipant = chatRoom.getChatRoomUsers().stream()
-                .anyMatch(chatRoomUser -> chatRoomUser.getUser().getId().equals(senderId));
+        boolean isParticipant = chatRoomService.isParticipant(senderId,request.getChatRoomId());
         if (!isParticipant) {
             throw new NotFoundException(
                     ExceptionMessages.USER_NOT_FOUND_IN_CHATROOM,

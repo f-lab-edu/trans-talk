@@ -4,16 +4,16 @@ import flab.transtalk.common.enums.LanguageSelection;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
 
 import java.time.LocalDate;
 
-@Value
+@Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProfileUpdateRequestDto {
-    String name;
-    LocalDate birthDate;
-    String selfIntroduction;
-    LanguageSelection language;
+    private String name;
+    private LocalDate birthDate;
+    private String selfIntroduction;
+    private LanguageSelection language;
 }

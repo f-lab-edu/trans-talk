@@ -5,21 +5,19 @@ import flab.transtalk.user.domain.Profile;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
 
 import java.time.LocalDate;
 
-@Value
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProfileCreateRequestDto {
-    String name;
+    private String name;
     @Builder.Default
-    LocalDate birthDate = LocalDate.now();
+    private LocalDate birthDate = LocalDate.now();
     @Builder.Default
-    String selfIntroduction = "";
+    private String selfIntroduction = "";
     @Builder.Default
-    LanguageSelection language = LanguageSelection.KOR;
+    private LanguageSelection language = LanguageSelection.KOR;
 
     public Profile toEntity(){
         return Profile.builder()

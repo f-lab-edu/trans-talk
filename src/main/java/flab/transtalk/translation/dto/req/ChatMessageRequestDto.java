@@ -1,9 +1,9 @@
 package flab.transtalk.translation.dto.req;
 
-import lombok.Value;
+import lombok.Getter;
 
-@Value
+@Getter
 public class ChatMessageRequestDto {
-    Long chatRoomId;
-    String content;
+    private Long chatRoomId;
+    private String content;
 }

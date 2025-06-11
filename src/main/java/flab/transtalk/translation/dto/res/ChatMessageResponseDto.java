@@ -4,19 +4,17 @@ import flab.transtalk.translation.domain.ChatMessage;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
 
 import java.time.LocalDateTime;
 
-@Value
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ChatMessageResponseDto {
-    Long chatRoomId;
-    Long senderId;
-    String content;
-    String translatedText;
-    LocalDateTime createdDate;
+    private Long chatRoomId;
+    private Long senderId;
+    private String content;
+    private String translatedText;
+    private LocalDateTime createdDate;
 
     public static ChatMessageResponseDto from(ChatMessage chatMessage) {
         return ChatMessageResponseDto.builder()
@@ -30,5 +28,9 @@ public class ChatMessageResponseDto {
                 .translatedText(chatMessage.getTranslatedText())
                 .createdDate(chatMessage.getCreatedDate())
                 .build();
+    }
+
+    public Long getChatRoomId() {
+        return chatRoomId;
     }
 }

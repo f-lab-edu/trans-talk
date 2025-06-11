@@ -13,8 +13,8 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class ProfileDtoMapper {
-    private CloudFrontService cloudFrontService;
-    private PostDtoMapper postDtoMapper;
+    private final CloudFrontService cloudFrontService;
+    private final PostDtoMapper postDtoMapper;
 
     public ProfileResponseDto toDto(Profile profile){
         return ProfileResponseDto.builder()

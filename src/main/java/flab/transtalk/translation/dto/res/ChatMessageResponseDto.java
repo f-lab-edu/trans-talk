@@ -17,14 +17,13 @@ public class ChatMessageResponseDto {
     private LocalDateTime createdDate;
 
     public static ChatMessageResponseDto from(ChatMessage chatMessage) {
+        Long chatRoomId = chatMessage.getChatRoom() != null ? chatMessage.getChatRoom().getId() : null;
+        Long senderId = chatMessage.getUser() != null ? chatMessage.getUser().getId() : null;
+
         return ChatMessageResponseDto.builder()
-                .chatRoomId(chatMessage.getChatRoom()!=null?
-                        chatMessage.getChatRoom().getId() :
-                        null
-                ).senderId(chatMessage.getUser()!=null?
-                        chatMessage.getUser().getId() :
-                        null
-                ).content(chatMessage.getContent())
+                .chatRoomId(chatRoomId)
+                .senderId(senderId)
+                .content(chatMessage.getContent())
                 .translatedText(chatMessage.getTranslatedText())
                 .createdDate(chatMessage.getCreatedDate())
                 .build();

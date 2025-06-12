@@ -1,7 +1,6 @@
 package flab.transtalk.user.domain;
 
 import flab.transtalk.auth.domain.AuthAccount;
-import flab.transtalk.translation.domain.ChatMessage;
 import flab.transtalk.translation.domain.ChatRoomUser;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -44,9 +43,6 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private AuthAccount authAccount;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ChatMessage> chatMessages = new ArrayList<>();
 
     @Builder
     private User(String email) {

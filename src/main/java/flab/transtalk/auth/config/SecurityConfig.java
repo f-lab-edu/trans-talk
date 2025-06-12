@@ -8,6 +8,7 @@ import flab.transtalk.auth.security.oauth.OAuth2AuthenticationEntryPoint;
 import flab.transtalk.auth.service.CustomOAuth2UserService;
 import flab.transtalk.auth.security.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -51,7 +53,7 @@ public class SecurityConfig {
                     } else if (e instanceof OAuth2CustomAuthenticationException oauthEx){
                         oAuth2AuthenticationEntryPoint.commence(request, response, oauthEx);
                     } else {
-                        e.printStackTrace();
+                        log.error("Unhandled authentication exception", e);
                     }
                 })
         );

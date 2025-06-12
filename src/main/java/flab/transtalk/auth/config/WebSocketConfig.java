@@ -2,6 +2,7 @@ package flab.transtalk.auth.config;
 
 import flab.transtalk.auth.security.jwt.JwtHandshakeInterceptor;
 import flab.transtalk.common.exception.NotFoundException;
+import flab.transtalk.config.StompConstants;
 import flab.transtalk.translation.service.chatroom.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -69,10 +70,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     String destination = accessor.getDestination();
                     Principal user = accessor.getUser();
 
-                    if (destination == null || !destination.startsWith("/topic/chat-room.") || destination.length()=="/topic/chat-room.".length()) {
+                    if (destination == null || !destination.startsWith(StompConstants.CHAT_ROOM_TOPIC_PREFIX) || destination.length()==StompConstants.CHAT_ROOM_TOPIC_PREFIX.length()) {
                         throw new MessagingException("잘못된 구독 경로입니다.");
                     }
-                    Long chatRoomId = Long.valueOf(destination.substring("/topic/chat-room.".length()));
+                    Long chatRoomId = Long.valueOf(destination.substring(StompConstants.CHAT_ROOM_TOPIC_PREFIX.length()));
                     Long userId = Long.valueOf(user.getName());
                     try {
                         if (!chatRoomService.isParticipant(userId, chatRoomId)) {

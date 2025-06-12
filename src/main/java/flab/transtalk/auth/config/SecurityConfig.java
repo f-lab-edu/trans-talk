@@ -1,5 +1,7 @@
 package flab.transtalk.auth.config;
 
+import flab.transtalk.auth.exception.JwtAuthenticationException;
+import flab.transtalk.auth.exception.OAuth2CustomAuthenticationException;
 import flab.transtalk.auth.security.jwt.JwtAuthenticationEntryPoint;
 import flab.transtalk.auth.security.jwt.JwtAuthenticationFilter;
 import flab.transtalk.auth.security.oauth.OAuth2AuthenticationEntryPoint;
@@ -39,16 +41,17 @@ public class SecurityConfig {
                         .successHandler(oAuth2SuccessHandler)
                 );
 
+        http.headers(h -> h.frameOptions(f -> f.sameOrigin()));
+
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.exceptionHandling(ex -> ex
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint));
-        http.exceptionHandling(ex -> ex
-                .authenticationEntryPoint((request, response, authException) -> {
-                    String uri = request.getRequestURI();
-                    if (uri.startsWith("/oauth2")) {
-                        oAuth2AuthenticationEntryPoint.commence(request, response, authException);
+                .authenticationEntryPoint((request, response, e) -> {
+                    if (e instanceof JwtAuthenticationException jwtEx) {
+                        jwtAuthenticationEntryPoint.commence(request, response, jwtEx);
+                    } else if (e instanceof OAuth2CustomAuthenticationException oauthEx){
+                        oAuth2AuthenticationEntryPoint.commence(request, response, oauthEx);
                     } else {
-                        jwtAuthenticationEntryPoint.commence(request, response, authException);
+                        e.printStackTrace();
                     }
                 })
         );

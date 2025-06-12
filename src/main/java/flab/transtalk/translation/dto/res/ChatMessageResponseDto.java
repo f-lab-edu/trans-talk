@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ChatMessageResponseDto {
+    private Long id;
     private Long chatRoomId;
     private Long senderId;
     private String content;
@@ -23,6 +24,7 @@ public class ChatMessageResponseDto {
         Long senderId = chatMessage.getUser() != null ? chatMessage.getUser().getId() : null;
 
         return ChatMessageResponseDto.builder()
+                .id(chatMessage.getId())
                 .chatRoomId(chatRoomId)
                 .senderId(senderId)
                 .content(chatMessage.getContent())

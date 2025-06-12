@@ -69,7 +69,7 @@ public class UserMatchingService {
         int updatedCount = current + refill;
         status.setRemainingMatchRequests(updatedCount);
 
-        status.setLastMatchRequestedAt(lastRequested.plusHours(refill * ServiceConfigConstants.MATCH_REQUEST_RECHARGE_INTERVAL_HOURS));
+        status.setLastMatchRequestedAt(lastRequested.plusHours((long) refill * ServiceConfigConstants.MATCH_REQUEST_RECHARGE_INTERVAL_HOURS));
     }
 
     @Transactional

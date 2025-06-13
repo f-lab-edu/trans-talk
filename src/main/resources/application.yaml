@@ -75,3 +75,15 @@ app:
     s3:
       bucket: ${AWS_S3_POST_BUCKET}     # 이미지 저장 버킷
       region: ${AWS_S3_REGION}
+      profiles-resource-path: user-profile-images/
+      post-resource-path: user-post-images/
+      suffix:
+        large: -large
+        small: -small
+    cloudfront:
+      domain: ${AWS_CLOUDFRONT_DOMAIN}
+      key-pair-id: ${AWS_CLOUDFRONT_KEY_PAIR_ID}
+      private-key-path: ${AWS_CLOUDFRONT_PRIVATE_KEY_PATH}
+      resource-paths:
+        - user-profile-images/*
+        - user-post-images/*

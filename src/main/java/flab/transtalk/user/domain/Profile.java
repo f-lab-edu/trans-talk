@@ -35,6 +35,9 @@ public class Profile {
     @Enumerated(EnumType.STRING)
     private LanguageSelection language;
 
+    @Column(nullable = true, length = 512)
+    private String imageKey;
+
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
@@ -54,6 +57,9 @@ public class Profile {
     }
     public void setLanguage(LanguageSelection language){
         this.language = language;
+    }
+    public void setImageKey(String imageKey) {
+        this.imageKey = imageKey;
     }
 
     public void setUser(User user) {

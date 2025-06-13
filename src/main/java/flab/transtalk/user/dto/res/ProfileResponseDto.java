@@ -1,38 +1,27 @@
 package flab.transtalk.user.dto.res;
 
 import flab.transtalk.common.enums.LanguageSelection;
-import flab.transtalk.user.domain.Profile;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DTO for {@link Profile}
- */
-@Value
+@Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProfileResponseDto {
-    Long id;
-    String name;
-    LocalDate birthDate;
-    String selfIntroduction;
-    LanguageSelection language;
+    private Long id;
+    private String name;
+    private LocalDate birthDate;
+    private String selfIntroduction;
+    private LanguageSelection language;
+    private String imageKey;
+    private String largeImageUrl;
+    private String smallImageUrl;
     @Builder.Default
-    List<PostResponseDto> posts = new ArrayList<>();
-
-    public static ProfileResponseDto from(Profile entity){
-        return ProfileResponseDto.builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .birthDate(entity.getBirthDate())
-                .selfIntroduction(entity.getSelfIntroduction())
-                .language(entity.getLanguage())
-                .build();
-    }
+    private List<PostResponseDto> posts = new ArrayList<>();
 }

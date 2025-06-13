@@ -1,9 +1,10 @@
 package flab.transtalk.user.dto.req;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
-@Value
+@Getter
 @Builder
 public class PostCreateRequestDto {
     private String briefContext;

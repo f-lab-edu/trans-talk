@@ -1,16 +1,11 @@
 package flab.transtalk.translation.dto.req;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
 
-import java.io.Serializable;
 import java.util.List;
 
-/**
- * DTO for {@link flab.transtalk.translation.domain.ChatRoom}
- */
-@Value
+@Getter
 public class ChatRoomCreateRequestDto {
-    String title;
-    List<Long> participantUserIds;
+    private String title;
+    private List<Long> participantUserIds;
 }

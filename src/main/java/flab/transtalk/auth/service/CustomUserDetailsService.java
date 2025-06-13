@@ -28,7 +28,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return CustomUserDetails.builder()
                 .userId(user.getId())
-                .username(externalId)
                 .authorities(Collections.singleton(new SimpleGrantedAuthority(DEFAULT_ROLE)))
                 .build();
     }

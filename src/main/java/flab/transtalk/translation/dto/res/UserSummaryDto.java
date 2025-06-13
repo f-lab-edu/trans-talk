@@ -4,18 +4,13 @@ import flab.transtalk.user.domain.User;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
 
-import java.io.Serializable;
-
-/**
- * DTO for {@link flab.transtalk.user.domain.User}
- */
-@Value
+@Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserSummaryDto {
-    Long id;
+    private Long id;
 
     public static UserSummaryDto from(User user){
         return UserSummaryDto.builder()

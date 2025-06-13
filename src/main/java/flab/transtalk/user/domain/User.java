@@ -44,6 +44,9 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private AuthAccount authAccount;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private UserMatchStatus userMatchStatus;
+
     @Builder
     private User(String email) {
         this.email      = email;
@@ -65,6 +68,16 @@ public class User {
         this.profile = profile;
         if (profile != null && profile.getUser() != this){
             profile.setUser(this);
+        }
+    }
+
+    public void setUserMatchStatus(UserMatchStatus userMatchStatus) {
+        if (this.userMatchStatus != null && this.userMatchStatus != userMatchStatus) {
+            this.userMatchStatus.setUser(null);
+        }
+        this.userMatchStatus = userMatchStatus;
+        if (userMatchStatus != null && userMatchStatus.getUser() != this){
+            userMatchStatus.setUser(this);
         }
     }
 }

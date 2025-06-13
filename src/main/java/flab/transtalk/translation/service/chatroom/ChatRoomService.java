@@ -4,7 +4,6 @@ import flab.transtalk.common.exception.BadRequestException;
 import flab.transtalk.common.exception.NotFoundException;
 import flab.transtalk.common.exception.message.ExceptionMessages;
 import flab.transtalk.translation.domain.ChatRoom;
-import flab.transtalk.translation.domain.ChatRoomUser;
 import flab.transtalk.translation.dto.req.ChatRoomCreateRequestDto;
 import flab.transtalk.translation.dto.res.ChatRoomResponseDto;
 import flab.transtalk.translation.repository.ChatRoomRepository;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,4 +45,15 @@ public class ChatRoomService {
         return ChatRoomResponseDto.from(savedChatRoom);
     }
 
+    @Transactional(readOnly = true)
+    public boolean isParticipant(Long userId, Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new NotFoundException(
+                        ExceptionMessages.CHATROOM_NOT_FOUND,
+                        chatRoomId.toString()
+                ));
+
+        return chatRoom.getChatRoomUsers().stream()
+                .anyMatch(chatRoomUser -> chatRoomUser.getUser().getId().equals(userId));
+    }
 }

@@ -7,6 +7,8 @@ public class ExceptionMessages {
     public static final String PROFILE_NOT_FOUND = "존재하지 않는 프로필입니다.";
     public static final String POST_NOT_FOUND = "존재하지 않는 포스트입니다.";
     public static final String IMAGE_NOT_FOUND = "존재하지 않는 이미지입니다.";
+    public static final String USER_NOT_FOUND_IN_CHATROOM = "채팅방에 존재하지 않는 사용자입니다.";
+    public static final String CHATROOM_NOT_FOUND = "존재하지 않는 채팅방입니다.";
 
 
     // BadRequestException

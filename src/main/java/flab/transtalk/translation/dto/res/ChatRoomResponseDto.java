@@ -4,23 +4,18 @@ import flab.transtalk.translation.domain.ChatRoom;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * DTO for {@link flab.transtalk.translation.domain.ChatRoom}
- */
-@Value
+@Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ChatRoomResponseDto {
-    Long id;
-    String title;
-    List<UserSummaryDto> participants;
+    private Long id;
+    private String title;
+    private List<UserSummaryDto> participants;
 
     public static ChatRoomResponseDto from(ChatRoom chatRoom){
         return ChatRoomResponseDto.builder()

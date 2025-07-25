@@ -1,7 +1,7 @@
 package flab.transtalk.user.service.image;
 
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.RSASSASigner;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import flab.transtalk.config.CloudFrontConfig;
 import flab.transtalk.config.ServiceConfigConstants;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,10 +12,16 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.security.interfaces.RSAPrivateKey;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,42 +33,49 @@ public class CloudFrontService {
     private String LARGE_SUFFIX;
     @Value("${app.aws.s3.suffix.small}")
     private String SMALL_SUFFIX;
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public Map<String, String> generateSignedCookies(Duration duration) throws JOSEException {
-        long expires = System.currentTimeMillis() + duration.toMillis();
+    public Map<String, String> generateSignedCookies(Duration duration) throws JsonProcessingException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+        String policy = buildPolicy(duration);
 
-        StringBuilder statementBuilder = new StringBuilder();
-        for (String path : cloudFrontConfig.getResourcePaths()) {
-            statementBuilder.append(String.format("""
-                {
-                  "Resource": "https://%s/%s",
-                  "Condition": {
-                    "DateLessThan": {"AWS:EpochTime": %d}
-                  }
-                },
-                """, cloudFrontConfig.getDomain(), path, expires / 1000));
-        }
-        String policy = String.format("""
-            {
-              "Statement": [
-                %s
-              ]
-            }
-            """, statementBuilder.toString().replaceAll(",$", ""));
-
-        JWSSigner signer = new RSASSASigner(privateKey);
-        JWSObject jws = new JWSObject(
-                new JWSHeader.Builder(JWSAlgorithm.RS256).build(),
-                new Payload(policy)
-        );
-        jws.sign(signer);
-        String signature = Base64.getUrlEncoder().withoutPadding().encodeToString(jws.serialize().getBytes());
+        String encodedPolicy = cfBase64(policy.getBytes(StandardCharsets.UTF_8));
+        String encodedSignature = cfBase64(signSha1Rsa(policy.getBytes(StandardCharsets.UTF_8), privateKey));
 
         return Map.of(
-                "CloudFront-Policy", Base64.getUrlEncoder().withoutPadding().encodeToString(policy.getBytes()),
-                "CloudFront-Signature", signature,
+                "CloudFront-Policy", encodedPolicy,
+                "CloudFront-Signature", encodedSignature,
                 "CloudFront-Key-Pair-Id", cloudFrontConfig.getKeyPairId()
         );
+    }
+
+    private String buildPolicy(Duration duration) throws JsonProcessingException {
+        long expires = System.currentTimeMillis() + duration.toMillis();
+
+        Map<String,Object> policyMap = Map.of(
+                "Statement", cloudFrontConfig.getResourcePaths().stream()
+                        .map(path -> Map.of(
+                                "Resource",  "https://" + cloudFrontConfig.getDomain() + path,
+                                "Condition", Map.of("DateLessThan", Map.of("AWS:EpochTime", expires / 1000))
+                        ))
+                        .collect(Collectors.toList())
+        );
+
+        return MAPPER.writeValueAsString(policyMap);
+    }
+
+    private byte[] signSha1Rsa(byte[] message, RSAPrivateKey key) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        Signature sig = Signature.getInstance("SHA1withRSA");
+        sig.initSign(key);
+        sig.update(message);
+        return sig.sign();
+    }
+
+    private String cfBase64(byte[] data) {
+        return Base64.getEncoder()
+                .encodeToString(data)
+                .replace('+', '-')
+                .replace('/', '~')
+                .replace('=', '_');
     }
 
     public void attachSignedCookies(HttpServletResponse response, Map<String, String> cookies, long ttlSeconds) {
@@ -78,7 +91,7 @@ public class CloudFrontService {
         });
     }
 
-    public void issueSignedCookie(HttpServletResponse response) throws JOSEException {
+    public void issueSignedCookie(HttpServletResponse response) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException, JsonProcessingException {
         Duration ttl = Duration.ofHours(ServiceConfigConstants.SIGNED_COOKIE_DURATION_HOUR);
         Map<String, String> cookies = generateSignedCookies(ttl);
         attachSignedCookies(response, cookies, ttl.toSeconds());

@@ -1,6 +1,6 @@
 package flab.transtalk.user.controller;
 
-import com.nimbusds.jose.JOSEException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import flab.transtalk.auth.security.principal.CustomUserDetails;
 import flab.transtalk.user.dto.req.ProfileUpdateRequestDto;
 import flab.transtalk.user.dto.res.ProfileResponseDto;
@@ -13,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -26,7 +29,8 @@ public class ProfileController {
     public ResponseEntity<ProfileResponseDto> updateProfile(
             HttpServletResponse response,
             @AuthenticationPrincipal CustomUserDetails principal,
-            @RequestParam("imageFile") MultipartFile imageFile) throws JOSEException {
+            @RequestParam("imageFile") MultipartFile imageFile
+    ) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException, JsonProcessingException {
         cloudFrontService.issueSignedCookie(response);
         return ResponseEntity.status(HttpStatus.OK).body(profileService.updateProfileImage(principal.getUserId(), imageFile));
     }
@@ -35,7 +39,8 @@ public class ProfileController {
     public ResponseEntity<ProfileResponseDto> updateProfile(
             HttpServletResponse response,
             @AuthenticationPrincipal CustomUserDetails principal,
-            @RequestBody ProfileUpdateRequestDto dto) throws JOSEException {
+            @RequestBody ProfileUpdateRequestDto dto
+        ) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException, JsonProcessingException {
         cloudFrontService.issueSignedCookie(response);
         return ResponseEntity.status(HttpStatus.OK).body(profileService.updateProfile(principal.getUserId(), dto));
     }
@@ -43,7 +48,8 @@ public class ProfileController {
     @GetMapping("/")
     public ResponseEntity<ProfileResponseDto> getProfile(
             HttpServletResponse response,
-            @AuthenticationPrincipal CustomUserDetails principal) throws JOSEException {
+            @AuthenticationPrincipal CustomUserDetails principal
+    ) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException, JsonProcessingException {
         cloudFrontService.issueSignedCookie(response);
         return ResponseEntity.status(HttpStatus.OK).body(profileService.getProfile(principal.getUserId()));
     }

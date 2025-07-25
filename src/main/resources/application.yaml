@@ -75,8 +75,8 @@ app:
     s3:
       bucket: ${AWS_S3_POST_BUCKET}     # 이미지 저장 버킷
       region: ${AWS_S3_REGION}
-      profiles-resource-path: user-profile-images/
-      post-resource-path: user-post-images/
+      profiles-resource-path: user-profile-images
+      post-resource-path: user-post-images
       suffix:
         large: -large
         small: -small

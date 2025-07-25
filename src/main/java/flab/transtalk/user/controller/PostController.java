@@ -1,6 +1,7 @@
 package flab.transtalk.user.controller;
 
 import com.nimbusds.jose.JOSEException;
+import flab.transtalk.auth.security.principal.CustomUserDetails;
 import flab.transtalk.user.dto.req.PostCreateRequestDto;
 import flab.transtalk.user.dto.res.PostResponseDto;
 import flab.transtalk.user.service.image.CloudFrontService;
@@ -27,15 +28,15 @@ public class PostController {
                 HttpServletResponse response,
                 @RequestParam("briefContext") String briefContext,
                 @RequestParam("imageFile") MultipartFile imageFile,
-                @RequestParam("profileId") Long profileId) throws JOSEException {
+                @AuthenticationPrincipal CustomUserDetails principal) throws JOSEException {
 
         PostCreateRequestDto dto = PostCreateRequestDto.builder()
                 .briefContext(briefContext)
                 .imageFile(imageFile)
-                .profileId(profileId)
+                .userId(principal.getUserId())
                 .build();
         cloudFrontService.issueSignedCookie(response);
-        return ResponseEntity.status(HttpStatus.CREATED).body(postService. createPost(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPost(dto));
     }
 
     @GetMapping("/{postId}")

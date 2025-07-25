@@ -25,11 +25,11 @@ public class ProfileService {
     private final S3ImageService s3ImageService;
 
     @Transactional
-    public ProfileResponseDto updateProfile(Long profileId, ProfileUpdateRequestDto dto){
-        Profile profile = profileRepository.findById(profileId)
+    public ProfileResponseDto updateProfile(Long userId, ProfileUpdateRequestDto dto){
+        Profile profile = profileRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundException(
                         ExceptionMessages.PROFILE_NOT_FOUND,
-                        profileId.toString()
+                        userId.toString()
                 ));
 
         if (dto.getName() != null){
@@ -49,24 +49,23 @@ public class ProfileService {
     }
 
     @Transactional(readOnly = true)
-    public ProfileResponseDto getProfile(Long profileId) {
-        Profile profile = profileRepository.findById(profileId)
+    public ProfileResponseDto getProfile(Long userId) {
+        Profile profile = profileRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundException(
                         ExceptionMessages.PROFILE_NOT_FOUND,
-                        profileId.toString()
+                        userId.toString()
                 ));
 
         return profileDtoMapper.toDto(profile);
     }
 
     @Transactional
-    public ProfileResponseDto updateProfileImage(Long profileId, MultipartFile imageFile) {
-        Profile profile = profileRepository.findById(profileId)
+    public ProfileResponseDto updateProfileImage(Long userId, MultipartFile imageFile) {
+        Profile profile = profileRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundException(
                         ExceptionMessages.PROFILE_NOT_FOUND,
-                        profileId.toString()
+                        userId.toString()
                 ));
-        Long userId = profile.getUser().getId();
         String prevImageKey = profile.getImageKey();
         String generatedImageKey;
         try {

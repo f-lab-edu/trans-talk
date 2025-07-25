@@ -55,8 +55,8 @@ public class PostService {
         return postDtoMapper.toDto(post);
     }
 
-    public void deletePost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() ->
+    public void deletePost(Long postId, Long userId) {
+        Post post = postRepository.findByIdAndProfile_UserId(postId, userId).orElseThrow(() ->
                 new NotFoundException(
                         ExceptionMessages.POST_NOT_FOUND,
                         postId.toString()

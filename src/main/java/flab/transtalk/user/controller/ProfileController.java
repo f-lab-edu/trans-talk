@@ -1,6 +1,7 @@
 package flab.transtalk.user.controller;
 
 import com.nimbusds.jose.JOSEException;
+import flab.transtalk.auth.security.principal.CustomUserDetails;
 import flab.transtalk.user.dto.req.ProfileUpdateRequestDto;
 import flab.transtalk.user.dto.res.ProfileResponseDto;
 import flab.transtalk.user.service.image.CloudFrontService;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,29 +22,29 @@ public class ProfileController {
     private final ProfileService profileService;
     private final CloudFrontService cloudFrontService;
 
-    @PutMapping("/{profileId}/image")
+    @PutMapping("/image")
     public ResponseEntity<ProfileResponseDto> updateProfile(
             HttpServletResponse response,
-            @PathVariable Long profileId,
+            @AuthenticationPrincipal CustomUserDetails principal,
             @RequestParam("imageFile") MultipartFile imageFile) throws JOSEException {
         cloudFrontService.issueSignedCookie(response);
-        return ResponseEntity.status(HttpStatus.OK).body(profileService.updateProfileImage(profileId, imageFile));
+        return ResponseEntity.status(HttpStatus.OK).body(profileService.updateProfileImage(principal.getUserId(), imageFile));
     }
 
-    @PutMapping("/{profileId}")
+    @PutMapping("/")
     public ResponseEntity<ProfileResponseDto> updateProfile(
             HttpServletResponse response,
-            @PathVariable Long profileId,
+            @AuthenticationPrincipal CustomUserDetails principal,
             @RequestBody ProfileUpdateRequestDto dto) throws JOSEException {
         cloudFrontService.issueSignedCookie(response);
-        return ResponseEntity.status(HttpStatus.OK).body(profileService.updateProfile(profileId, dto));
+        return ResponseEntity.status(HttpStatus.OK).body(profileService.updateProfile(principal.getUserId(), dto));
     }
 
-    @GetMapping("/{profileId}")
+    @GetMapping("/")
     public ResponseEntity<ProfileResponseDto> getProfile(
             HttpServletResponse response,
-            @PathVariable Long profileId) throws JOSEException {
+            @AuthenticationPrincipal CustomUserDetails principal) throws JOSEException {
         cloudFrontService.issueSignedCookie(response);
-        return ResponseEntity.status(HttpStatus.OK).body(profileService.getProfile(profileId));
+        return ResponseEntity.status(HttpStatus.OK).body(profileService.getProfile(principal.getUserId()));
     }
 }

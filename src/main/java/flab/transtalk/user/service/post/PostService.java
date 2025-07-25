@@ -25,10 +25,10 @@ public class PostService {
     private final S3ImageService s3ImageService;
 
     public PostResponseDto createPost(PostCreateRequestDto dto) {
-        Profile profile = profileRepository.findById(dto.getProfileId())
+        Profile profile = profileRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundException(
                         ExceptionMessages.PROFILE_NOT_FOUND,
-                        dto.getProfileId().toString()
+                        dto.getUserId().toString()
                 ));
         String generatedImageKey;
         try {
@@ -55,8 +55,8 @@ public class PostService {
         return postDtoMapper.toDto(post);
     }
 
-    public void deletePost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() ->
+    public void deletePost(Long postId, Long userId) {
+        Post post = postRepository.findByIdAndProfile_UserId(postId, userId).orElseThrow(() ->
                 new NotFoundException(
                         ExceptionMessages.POST_NOT_FOUND,
                         postId.toString()

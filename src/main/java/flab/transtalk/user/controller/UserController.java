@@ -18,17 +18,21 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserResponseDto> getUser(@PathVariable Long userId){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(userId));
+    @GetMapping("/my")
+    public ResponseEntity<UserResponseDto> getUser(
+            @AuthenticationPrincipal CustomUserDetails principal
+    ){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(principal.getUserId()));
     }
 
     // 주어진 사용자 제외, 무작위 사용자 호출
-    @GetMapping("/matching/{currentUserId}")
-    public ResponseEntity<UserListResponseDto> getMatchingUsers(@PathVariable Long currentUserId){
+    @GetMapping("/matching")
+    public ResponseEntity<UserListResponseDto> getMatchingUsers(
+            @AuthenticationPrincipal CustomUserDetails principal
+    ){
         return ResponseEntity.status(HttpStatus.OK).body(
                 UserListResponseDto.builder()
-                        .users(userService.getMatchResult(currentUserId))
+                        .users(userService.getMatchResult(principal.getUserId()))
                         .build()
         );
     }

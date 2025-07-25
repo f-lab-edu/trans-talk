@@ -9,5 +9,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostCreateRequestDto {
     private String briefContext;
     private MultipartFile imageFile;
-    private Long profileId;
+    private Long userId;
 }

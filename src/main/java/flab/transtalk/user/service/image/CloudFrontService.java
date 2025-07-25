@@ -72,7 +72,7 @@ public class CloudFrontService {
                     .httpOnly(true)
                     .secure(true)
                     .maxAge(ttlSeconds)
-                    .sameSite("Lax")
+                    .sameSite("None")
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         });

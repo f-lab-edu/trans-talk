@@ -38,6 +38,8 @@ spring:
       hibernate.default_batch_fetch_size: 1000
 
   security:
+    cors:
+      allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS}
     oauth2:
       client:
         registration:
@@ -75,8 +77,8 @@ app:
     s3:
       bucket: ${AWS_S3_POST_BUCKET}     # 이미지 저장 버킷
       region: ${AWS_S3_REGION}
-      profiles-resource-path: user-profile-images/
-      post-resource-path: user-post-images/
+      profiles-resource-path: user-profile-images
+      post-resource-path: user-post-images
       suffix:
         large: -large
         small: -small
@@ -85,5 +87,6 @@ app:
       key-pair-id: ${AWS_CLOUDFRONT_KEY_PAIR_ID}
       private-key-path: ${AWS_CLOUDFRONT_PRIVATE_KEY_PATH}
       resource-paths:
-        - user-profile-images/*
-        - user-post-images/*
+        - /*
+      cookie:
+        use-parent-domain: ${CLOUDFRONT_COOKIE_USE_PARENT_DOMAIN}

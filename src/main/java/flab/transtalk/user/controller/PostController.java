@@ -1,6 +1,6 @@
 package flab.transtalk.user.controller;
 
-import com.nimbusds.jose.JOSEException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import flab.transtalk.auth.security.principal.CustomUserDetails;
 import flab.transtalk.user.dto.req.PostCreateRequestDto;
 import flab.transtalk.user.dto.res.PostResponseDto;
@@ -10,8 +10,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
@@ -28,8 +32,8 @@ public class PostController {
                 HttpServletResponse response,
                 @RequestParam("briefContext") String briefContext,
                 @RequestParam("imageFile") MultipartFile imageFile,
-                @AuthenticationPrincipal CustomUserDetails principal) throws JOSEException {
-
+                @AuthenticationPrincipal CustomUserDetails principal
+    ) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException, JsonProcessingException {
         PostCreateRequestDto dto = PostCreateRequestDto.builder()
                 .briefContext(briefContext)
                 .imageFile(imageFile)
@@ -43,14 +47,14 @@ public class PostController {
     public ResponseEntity<PostResponseDto> get(
             HttpServletResponse response,
             @PathVariable Long postId
-    ) throws JOSEException {
+    ) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException, JsonProcessingException {
         cloudFrontService.issueSignedCookie(response);
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPost(postId));
     }
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(
-            @PathVariable Long postId){
+            @PathVariable Long postId,
             @AuthenticationPrincipal CustomUserDetails principal
     ){
         postService.deletePost(postId, principal.getUserId());

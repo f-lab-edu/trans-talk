@@ -161,7 +161,7 @@ public class S3ImageService {
         }
 
         int lastDotIndex = imageKey.lastIndexOf(".");
-        if (lastDotIndex == -1 || lastDotIndex == imageKey.length() - 1 || !SUPPORTED_IMAGE_TYPES.values().contains(imageKey.substring(lastDotIndex+1))) {
+        if (lastDotIndex == -1 || lastDotIndex == imageKey.length() - 1 || !SUPPORTED_IMAGE_TYPES.values().contains(imageKey.substring(lastDotIndex))) {
             throw new IllegalArgumentException("Invalid imageKey format: missing or malformed file extension.");
         }
         String base = imageKey.substring(0, lastDotIndex);

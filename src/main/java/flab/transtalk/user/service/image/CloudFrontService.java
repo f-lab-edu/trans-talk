@@ -19,6 +19,7 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.interfaces.RSAPrivateKey;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,6 +35,8 @@ public class CloudFrontService {
     @Value("${app.aws.s3.suffix.small}")
     private String SMALL_SUFFIX;
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    @Value("${app.aws.cloudfront.cookie.use-parent-domain}")
+    private boolean useParentCookieDomain;
 
     public Map<String, String> generateSignedCookies(Duration duration) throws JsonProcessingException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         String policy = buildPolicy(duration);
@@ -80,15 +83,33 @@ public class CloudFrontService {
 
     public void attachSignedCookies(HttpServletResponse response, Map<String, String> cookies, long ttlSeconds) {
         cookies.forEach((key, value) -> {
-            ResponseCookie cookie = ResponseCookie.from(key, value)
+            ResponseCookie.ResponseCookieBuilder builder = ResponseCookie.from(key, value)
                     .path("/")
                     .httpOnly(true)
                     .secure(true)
                     .maxAge(ttlSeconds)
-                    .sameSite("None")
-                    .build();
-            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+                    .sameSite("None");
+
+            if (useParentCookieDomain) {
+                builder.domain(extractParentDomain(cloudFrontConfig.getDomain()));
+            }
+
+            response.addHeader(HttpHeaders.SET_COOKIE, builder.build().toString());
         });
+    }
+
+    public String extractParentDomain(String domain) {
+        if (domain == null || !domain.contains(".")) {
+            throw new IllegalArgumentException("유효하지 않은 도메인: " + domain);
+        }
+
+        String[] parts = domain.split("\\.");
+
+        if (parts.length < 2) {
+            throw new IllegalArgumentException("상위 도메인을 추출할 수 없음: " + domain);
+        }
+
+        return "." + String.join(".", Arrays.copyOfRange(parts, 1, parts.length));
     }
 
     public void issueSignedCookie(HttpServletResponse response) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException, JsonProcessingException {

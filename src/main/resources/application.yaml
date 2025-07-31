@@ -88,3 +88,5 @@ app:
       private-key-path: ${AWS_CLOUDFRONT_PRIVATE_KEY_PATH}
       resource-paths:
         - /*
+      cookie:
+        use-parent-domain: ${CLOUDFRONT_COOKIE_USE_PARENT_DOMAIN}

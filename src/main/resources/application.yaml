@@ -38,6 +38,8 @@ spring:
       hibernate.default_batch_fetch_size: 1000
 
   security:
+    cors:
+      allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS}
     oauth2:
       client:
         registration:

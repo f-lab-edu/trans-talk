@@ -90,3 +90,7 @@ app:
         - /*
       cookie:
         use-parent-domain: ${CLOUDFRONT_COOKIE_USE_PARENT_DOMAIN}
+
+translation:
+  google:
+    credentials-path: ${GOOGLE_CLOUD_API_CREDENTIALS_PATH_FOR_TRANSLATION}

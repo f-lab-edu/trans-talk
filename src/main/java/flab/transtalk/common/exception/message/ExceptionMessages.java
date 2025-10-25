@@ -24,4 +24,8 @@ public class ExceptionMessages {
     public static final String PROFILE_NOT_LINKED_TO_USER = "사용자에게 프로필이 링크되지 않은 상태입니다.";
 
 
+    // ExternalApiUnavailableException
+    public static final String TRANSLATION_SERVICE_UNAVAILABLE = "해당 외부 번역 API가 현재 사용이 불가능한 상태입니다. 다음에 다시 요청해주시길 바랍니다.: %s";
+
+
 }

@@ -3,6 +3,7 @@ package flab.transtalk.common.exception.handler;
 import flab.transtalk.common.dto.res.ApiErrorResponse;
 import flab.transtalk.common.exception.BadRequestException;
 import flab.transtalk.common.exception.NotFoundException;
+import flab.transtalk.common.exception.MissingMandatoryAssociationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,5 +29,11 @@ public class CustomExceptionHandler {
         List<String> errors = new ArrayList<>();
         errors.add(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiErrorResponse("BAD_REQUEST", errors));
+    }
+    @ExceptionHandler(MissingMandatoryAssociationException.class)
+    public ResponseEntity<ApiErrorResponse> handlerMissingMandatoryAssociationException(MissingMandatoryAssociationException e){
+        List<String> errors = new ArrayList<>();
+        errors.add(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiErrorResponse("INTERNAL_SERVER_ERROR", errors));
     }
 }

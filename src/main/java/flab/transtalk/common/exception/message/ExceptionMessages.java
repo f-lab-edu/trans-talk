@@ -17,4 +17,11 @@ public class ExceptionMessages {
     public static final String UNSUPPORTED_IMAGE_FORMAT = "지원하지 않는 이미지 형식입니다: %s";
     public static final String USER_MATCH_STATUS_NOT_FOUND = "사용자의 매칭 상태 정보가 존재하지 않습니다.";
     public static final String MATCH_ATTEMPT_EXHAUSTED = "남은 매칭 시도 가능 횟수가 없습니다.";
+
+
+    // RequiredRelationMissingException
+    public static final String NOT_EXIST_RECEIVER_IN_CHATROOM = "채팅방에 대화 상대가 존재하지 않습니다.";
+    public static final String PROFILE_NOT_LINKED_TO_USER = "사용자에게 프로필이 링크되지 않은 상태입니다.";
+
+
 }

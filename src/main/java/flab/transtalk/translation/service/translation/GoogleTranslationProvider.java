@@ -34,7 +34,6 @@ public class GoogleTranslationProvider implements TranslationProvider {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, Object> requestBody = Map.of(
-                "sourceLanguageCode", sourceLang.getCode(),
                 "targetLanguageCode", targetLang.getCode(),
                 "contents", Collections.singletonList(text)
         );

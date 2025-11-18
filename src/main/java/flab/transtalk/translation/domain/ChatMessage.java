@@ -21,10 +21,10 @@ public class ChatMessage {
     )
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String content;
 
-    @Column
+    @Column(nullable = false)
     private String translatedText;
 
     @Column

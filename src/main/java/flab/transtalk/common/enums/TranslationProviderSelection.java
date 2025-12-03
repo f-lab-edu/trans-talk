@@ -1,6 +1,7 @@
 package flab.transtalk.common.enums;
 
 public enum TranslationProviderSelection {
+    OPENAI("openai"),
     GOOGLE("google");
 
     private final String providerKey;

@@ -93,4 +93,10 @@ app:
 
 translation:
   google:
+    project-id: ${GOOGLE_CLOUD_API_PROJECT_ID_FOR_TRANSLATION}
     credentials-path: ${GOOGLE_CLOUD_API_CREDENTIALS_PATH_FOR_TRANSLATION}
+  openai:
+    api-key: ${OPENAI_API_SECRET_KEY}
+    prompt-id: ${OPENAI_API_PROMPT_ID}
+    prompt-version: ${OPENAI_API_PROMPT_VERSION}
+    model-id: ${OPENAI_API_MODEL_ID}

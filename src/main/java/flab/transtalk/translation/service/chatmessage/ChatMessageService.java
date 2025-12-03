@@ -85,7 +85,7 @@ public class ChatMessageService {
             throw new ExternalApiUnavailableException(
                     String.format(
                             ExceptionMessages.TRANSLATION_SERVICE_UNAVAILABLE,
-                            request.getProviderSelection().getProviderKey()
+                            (request.getProviderSelection().getProviderKey()!=null? request.getProviderSelection().getProviderKey(): "default provider")
                     ));
         }
 

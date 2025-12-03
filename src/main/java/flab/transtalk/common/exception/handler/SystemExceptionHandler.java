@@ -23,4 +23,14 @@ public class SystemExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiErrorResponse("SIGNED_COOKIE_ERROR", errors));
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiErrorResponse> handleIllegalStateException(IllegalStateException e) {
+        log.error("IllegalStateException 발생", e);
+
+        List<String> errors = List.of(
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiErrorResponse("INTERNAL_SERVER_ERROR", errors));
+    }
 }

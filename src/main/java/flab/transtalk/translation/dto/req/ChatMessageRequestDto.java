@@ -7,5 +7,5 @@ import lombok.Getter;
 public class ChatMessageRequestDto {
     private Long chatRoomId;
     private String content;
-    private TranslationProviderSelection providerSelection = TranslationProviderSelection.GOOGLE;
+    private TranslationProviderSelection providerSelection;
 }

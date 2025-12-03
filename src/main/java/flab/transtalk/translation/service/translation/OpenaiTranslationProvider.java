@@ -31,7 +31,6 @@ public class OpenaiTranslationProvider implements TranslationProvider {
 
     @Override
     public String translate(String text, LanguageSelection sourceLang, LanguageSelection targetLang) {
-
         String url = "https://api.openai.com/v1/responses";
 
         HttpHeaders headers = new HttpHeaders();
@@ -70,7 +69,7 @@ public class OpenaiTranslationProvider implements TranslationProvider {
 
             Map<String, Object> body = response.getBody();
             if (body == null || !body.containsKey("output")) {
-                throw new IllegalStateException("OpenAI 응답이 잘못되었습니다. body=" + body);
+                throw new IllegalStateException("OpenAI 응답이 잘못되었습니다.");
             }
 
             // output -> 배열 형태이며 message 아이템 포함

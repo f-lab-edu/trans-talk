@@ -50,7 +50,7 @@ public class GoogleTranslationProvider implements TranslationProvider {
 
             Map<String, Object> body = response.getBody();
             if (body == null || !body.containsKey("translations")) {
-                throw new RuntimeException("Google 번역 API 응답이 유효하지 않은 형식입니다.\n응답 내용: " + body);
+                throw new IllegalStateException("Google 번역 API 응답이 유효하지 않은 형식입니다.");
             }
 
             @SuppressWarnings("unchecked")

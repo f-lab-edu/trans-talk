@@ -92,6 +92,7 @@ app:
         use-parent-domain: ${CLOUDFRONT_COOKIE_USE_PARENT_DOMAIN}
 
 translation:
+  default-provider: ${TRANSLATION_DEFAULT_PROVIDER}
   google:
     project-id: ${GOOGLE_CLOUD_API_PROJECT_ID_FOR_TRANSLATION}
     credentials-path: ${GOOGLE_CLOUD_API_CREDENTIALS_PATH_FOR_TRANSLATION}
